@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  color: $dark-grey;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: $m-size;
+  background: url('/images/pattern4.png');
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.is-active {
+  font-weight: bold;
+
+}
+
+.error {
+  color: #ff2d1f;
+}
+
+.alert {
+  width: 350px;
+  margin: 5px auto;
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.success {
+  width: 350px;
+  margin: 5px auto;
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.input {
+height: 30px;
+padding: 10px 19px;
+border: 1px solid #e0e0e0;
+border-radius: 2px;
+color: #656565;
+font-size: 13px;
+line-height: 13px;
+transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+&:hover,
+ &:focus {
+   box-shadow: rgba(58,78,95,0.2) 0 4px 10px, rgba(58,78,95,0.05) 0 -5px 10px;
+   border-color: #add8e6;
+ }
+
+ &:focus {
+   outline: 0;
+ }
+}

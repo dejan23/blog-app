@@ -1,0 +1,27 @@
+.header {
+  background: #ffffff;
+  box-shadow: rgba(58,78,95,0.2) 0 1px 16px, rgba(58,78,95,0.05) 0 -5px 16px;
+  margin-bottom: 30px;
+}
+
+.header__content {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: $s-size 0;
+
+}
+
+.header__brand {
+  color: #645a53;
+  text-decoration: none;
+  h1 {
+    margin: 0;
+  }
+}
+
+.header__username {
+  text-decoration: none;
+  color: black;
+  margin-right: 25px;
+}
