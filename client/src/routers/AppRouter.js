@@ -8,7 +8,7 @@ import Register from '../components/auth/Register';
 import RegisterSuccess from '../components/auth/RegisterSuccess';
 import Verify from '../components/auth/Verify';
 import ResendToken from '../components/auth/ResendToken';
-import ResendTokenSuccess from '../components/auth/ResendTokenSuccess';
+// import ResendTokenSuccess from '../components/auth/ResendTokenSuccess';
 import NotFoundPage from '../components/NotFoundPage';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
@@ -27,7 +27,7 @@ const AppRouter = () => (
         <PublicRoute exact path='/register/success' component={RegisterSuccess}/>
         <PublicRoute exact path='/auth/verify/:token' component={Verify}/>
         <PublicRoute exact path='/auth/resend' component={ResendToken}/>
-        <PublicRoute exact path='/auth/resend/success' component={ResendTokenSuccess}/>
+        {/* <PublicRoute exact path='/auth/resend/success' component={ResendTokenSuccess}/> */}
 
         <PrivateRoute exact path='/feature' component={Feature}/>
         <Route component={NotFoundPage} />

@@ -81,7 +81,7 @@ export function resendToken(email) {
   return function(dispatch) {
     axios.put(`${ROOT_URL}/auth/resendToken`, {email})
       .then(response => {
-        history.push('/auth/resend/success');
+        history.push('/');
       })
       .catch(error => dispatch(authError(error.response.data.error)))
   }
