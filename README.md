@@ -17,7 +17,4 @@ built using
 - and deployed to heroku
 
 visit project at https://blog-app1.herokuapp.com/
-demo account
-- email: demo@demo.com
-- pass: demo
 
