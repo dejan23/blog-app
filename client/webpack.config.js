@@ -1,5 +1,7 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+require("babel-polyfill");
+
 
 module.exports = (env) => {
   const isProduction = env === 'production';
