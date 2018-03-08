@@ -8,7 +8,7 @@ import Register from '../components/auth/Register';
 import RegisterSuccess from '../components/auth/RegisterSuccess';
 import Verify from '../components/auth/Verify';
 import ResendToken from '../components/auth/ResendToken';
-import ResendTokenSuccess from '../components/auth/ResendTokenSuccess';
+import ResendTokenSuccess from '../components/auth/resendTokenSuccess';
 import NotFoundPage from '../components/NotFoundPage';
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
