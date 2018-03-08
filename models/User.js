@@ -21,6 +21,36 @@ const userSchema = new mongoose.Schema({
   updated_at: {
     type: Date,
     default: Date.now
+  },
+  username: {
+    type: String
+  },
+  firstName: {
+    type: String
+  },
+  lastName: {
+    type: String
+  },
+  location: {
+    type: String
+  },
+  city: {
+    type: String
+  },
+  gender: {
+    type: String
+  },
+  day: {
+    type: String
+  },
+  month: {
+    type: String
+  },
+  year: {
+    type: String
+  },
+  avatar: {
+    type: String
   }
 })
 

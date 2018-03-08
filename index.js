@@ -8,11 +8,18 @@ const cors = require('cors');
 
 // DB setup
 mongoose.connect(keys.mongoURI)
+mongoose.connection
+  .once('open', () => console.log('Good to go!'))
+  .on('error', (error) => {
+    console.warn('Warning', error)
+  })
 
 // App setup
 app.use(cors());
 app.use(bodyParser.json({ type: '*/*' }))
 require('./routes/authRoutes')(app);
+require('./routes/articleRoutes')(app);
+require('./routes/userRoutes')(app);
 
 if(process.env.NODE_ENV === 'production') {
   // express will serve up production assets, like main.js or main.css

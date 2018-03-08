@@ -1,0 +1,57 @@
+.c-card *
+  display: block
+  box-sizing: border-box
+  color: black
+  text-decoration: none
+
+
+.card-container
+  max-width: 900px
+  margin: 0 auto
+
+.c-card
+  display: inline-block
+  max-width: 350px
+  margin: 20px
+  cursor: pointer
+  transition: all 0.3s ease
+  text-align: left
+  text-decoration: none
+  background: #fff
+  box-shadow: 0 6px 10px -5px rgba(0, 0, 0, 0.2)
+
+  &:hover
+    transform: translateY(-5px)
+    box-shadow: 0 20px 20px -15px rgba(0, 0, 0, 0.3)
+
+  &__header
+    //..
+
+  &__image
+    max-width: 100%
+    display: flex
+    align-items: center
+    justify-content: center
+
+  &__body
+    padding: 20px
+
+  &__title
+    font-size: 15px
+    font-weight: 700
+    line-height: 1.2
+    margin: 0
+    padding: 0
+    text-transform: uppercase
+
+  &__subtitle
+    font-size: 13px
+    margin-top: 5px
+    padding: 0
+
+  &__intro
+    margin-bottom: 0
+
+  &__footer
+    float: right
+    padding: 20px

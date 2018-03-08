@@ -4,13 +4,31 @@
 
 html {
   font-size: 62.5%;
+  height: 100%;
+  margin: 0;
 }
 
 body {
   color: $dark-grey;
   font-family: Helvetica, Arial, sans-serif;
   font-size: $m-size;
-  background: url('/images/pattern4.png');
+  height: 100%;
+      margin: 0;
+
+
+}
+.content {
+  margin: 0 auto;
+}
+
+.secret {
+  color: #c7c7c7;
+  text-decoration: none;
+}
+
+.secret2 {
+  color: #efefef;
+  text-decoration: none;
 }
 
 button {
@@ -42,19 +60,57 @@ button:disabled {
 }
 
 .success {
-  width: 350px;
-  margin: 5px auto;
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
   color: #3c763d;
   background-color: #dff0d8;
   border-color: #d6e9c6;
   padding: 15px;
   border: 1px solid transparent;
   border-radius: 4px;
+  text-align: center;
+}
+
+.info {
+  position: absolute;
+  width: 100%;
+  margin: 0 auto;
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  padding: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  filter: alpha(opacity=20);
+  opacity: .2;
+  background: none;
+  color: #666;
+  border: 0;
+  border-radius: 0;
+  margin-right: 0;
+  display: inline-block;
+  padding: 0;
+  text-decoration: none;
+
+  a {
+      text-decoration: none;
+    }
 }
 
 .input {
 height: 30px;
-padding: 10px 19px;
+padding: 0px 19px;
 border: 1px solid #e0e0e0;
 border-radius: 2px;
 color: #656565;

@@ -25,6 +25,30 @@ const TempUserSchema = new mongoose.Schema({
   token: {
     type: String,
     expires: '1d'
+  },
+  username: {
+    type: String
+  },
+  firstName: {
+    type: String
+  },
+  lastName: {
+    type: String
+  },
+  location: {
+    type: String
+  },
+  gender: {
+    type: String
+  },
+  day: {
+    type: String
+  },
+  month: {
+    type: String
+  },
+  year: {
+    type: String
   }
 })
 

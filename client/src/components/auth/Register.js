@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import { registerUser, clearAlert } from '../../actions/auth';
+import { addFlashMessage } from '../../actions/flashMessages';
 
 // -------------- validation ----------
 const maxLength = max => value => value && value.length > max ? `Must be ${max} characters or less` : undefined
@@ -32,7 +33,10 @@ class Register extends Component {
   }
 
   submitForm = values => {
-    // call action creator to sign up the user
+    this.props.addFlashMessage({
+      type: 'success',
+      message: 'You registered successfully. Please check your email inbox to activate account!'
+    })
     this.props.registerUser(values)
   }
 
@@ -53,6 +57,7 @@ class Register extends Component {
       <form className="box-layout" onSubmit={handleSubmit(this.submitForm.bind(this))}>
         <div className="box-layout__box">
         <div className="box-layout__form-group">
+          <h2>Register a new account</h2>
           <label>Email:</label>
           <Field
             validate={[requiredEmail, email, maxLength45]}
@@ -90,37 +95,11 @@ class Register extends Component {
   }
 }
 
-// function validate(values) {
-//   const errors = {};
-//
-//   if (!values.email) {
-//     errors.email = 'Please enter an email';
-//   }
-//
-//   if (!values.password) {
-//     errors.password = 'Please enter an password';
-//   }
-//
-//   if (!values.passwordConfirm) {
-//     errors.passwordConfirm = 'Please enter an password confirmation';
-//   }
-//
-//   if (values.password !== values.passwordConfirm) {
-//     errors.passwordConfirm = 'passwords must match';
-//   }
-//
-//   if ( values.email && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-//     errors.email = 'Invalid email address'
-//   }
-//
-//   return errors;
-// }
-
 function mapStateToProps(state) {
   return { errorMessage: state.auth.error };
 }
 
-Register = connect(mapStateToProps, actions)(Register);
+Register = connect(mapStateToProps, { registerUser, addFlashMessage, clearAlert })(Register);
 
 export default reduxForm({
   form: 'registerForm'

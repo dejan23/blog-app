@@ -3,44 +3,58 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const config = require('../config/keys');
 const cryptoRandomString = require('crypto-random-string');
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const faker = require('faker');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
   return jwt.sign({sub: user.id, iat: timestamp}, config.secretJWT);
 }
 
-exports.login = function(req, res, next) {
-  // User has already ther email and password auth'd
-  // We just need to give them a token
-  res.send({token: tokenForUser(req.user)});
-};
-
 exports.verifyLogin = function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
 
-  User.findOne({email}, function(err, user) {
+  TempUser.findOne({email}, function(err, user) {
     if(err) {return next(err)}
     if(user) {
-      return next()
-    } else {
-      TempUser.findOne({email}, function(err, user) {
-        if(err) {return next(err)}
-        if(!user) {
-          return res.status(401).send({error: 'Username or password is incorrect'})
-        } else {
-          message = res.status(401).send({error: 'You must verify your email'})
-          return next(message)
-        }
-      })
+      return res.status(401).send({error: 'You must verify your email'})
     }
+
+    User.findOne({email}, function(err, user) {
+      if(err) {return next(err)}
+      if(!user) {
+        return res.status(401).send({error: 'Wrong pass or email'})
+      }
+      if(user) {
+        // compare passwords - is 'password' equal to user.password?
+        user.comparePassword(password, function(err, isMatch){
+          if(err) { return done(err) }
+          if(isMatch) {
+            console.log(user)
+            return res.send({token: tokenForUser(user), username: user.username});
+          }
+          return res.status(401).send({error: 'Wrong pass or email'})
+        })
+      }
+
+    })
   })
+
+
 }
 
 exports.register = function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
+  const username = req.body.username;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const location = req.body.location;
+  const gender = req.body.gender;
+  const day = req.body.day;
+  const month = req.body.month;
+  const year = req.body.year;
 
   if (!email || !password) {
     return res.status(422).send({error: 'You must provide email and password'});
@@ -71,9 +85,17 @@ exports.register = function(req, res, next) {
       const token = cryptoRandomString(32);
       // If a user with email does NOT exist, create and save user record
       const user = new TempUser({
-        email: email,
-        password: password,
-        token: token
+        email,
+        password,
+        token,
+        username,
+        firstName,
+        lastName,
+        location,
+        gender,
+        day,
+        month,
+        year
       });
 
       user.save(function(err) {
@@ -110,60 +132,58 @@ exports.register = function(req, res, next) {
 };
 
 exports.resendToken = function(req, res, next) {
-  console.log('resendToken' + req.body.email)
-      const email = req.body.email;
+    const email = req.body.email;
 
-      TempUser.findOne({email: email}, function(err, existingUser) {
-        if (err) {
-          return next(err);
-        }
+    TempUser.findOne({email: email}, function(err, existingUser) {
+      if (err) {
+        return next(err);
+      }
 
-        if (!existingUser) {
-          return res.status(401).send({error: 'Account/email does not exist'})
-        } else {
-          // console.log(existingUser.token)
-          const existingToken = existingUser.token;
-          let token = cryptoRandomString(32);
-          // console.log(token)
+      if (!existingUser) {
+        return res.status(401).send({error: 'Account/email does not exist'})
+      } else {
+        // console.log(existingUser.token)
+        const existingToken = existingUser.token;
+        let token = cryptoRandomString(32);
+        // console.log(token)
 
-          TempUser.findOneAndUpdate({token: existingToken}, {$set: {token: token}}, {new: true}, function(err, updatedUser) {
-            if(err) {return next(err)}
-            // console.log(updatedUser)
+        TempUser.findOneAndUpdate({token: existingToken}, {$set: {token: token}}, {new: true}, function(err, updatedUser) {
+          if(err) {return next(err)}
+          // console.log(updatedUser)
 
-            let token = updatedUser.token;
-            const transporter =  nodemailer.createTransport({
-              service: 'Mailgun',
-              auth: {
-                user:
-                  'postmaster@sandbox66f8be4f8cee496a8dc4729939a7a063.mailgun.org',
-                pass: '354f225af425b84650c0255afcebd901-fab099d8-a60e4e82'
-              },
-              tls: {
-                rejectUnauthorized: false
-              }
-            });
+          let token = updatedUser.token;
+          const transporter =  nodemailer.createTransport({
+            service: 'Mailgun',
+            auth: {
+              user:
+                'postmaster@sandbox66f8be4f8cee496a8dc4729939a7a063.mailgun.org',
+              pass: '354f225af425b84650c0255afcebd901-fab099d8-a60e4e82'
+            },
+            tls: {
+              rejectUnauthorized: false
+            }
+          });
 
-            const mailOptions = {
-              from: 'no-reply@blog.com',
-              to: email,
-              subject: 'Account Verification Token',
-              text: `http://localhost:8080/auth/verify/${token}`
-            };
+          const mailOptions = {
+            from: 'no-reply@blog.com',
+            to: email,
+            subject: 'Account Verification Token',
+            text: `http://localhost:8080/auth/verify/${token}`
+          };
 
-             transporter.sendMail(mailOptions, function(err) {
-              if (err) {
-                return res.status(500).send({error: err.message});
-              }
-              res.status(200).send({success: 'Email sent!'});
-            });
-          })
-        }
-      })
+           transporter.sendMail(mailOptions, function(err) {
+            if (err) {
+              return res.status(500).send({error: err.message});
+            }
+            res.status(200).send({success: 'Email sent!'});
+          });
+        })
+      }
+    })
   };
 
 
 exports.realRegister = function(req, res, next) {
-  console.log('realRegister' + req.params.token)
   const token = req.params.token;
   TempUser.findOne({token: token}, function(err, existingToken) {
     if (err) {
@@ -174,7 +194,15 @@ exports.realRegister = function(req, res, next) {
     }
     const user = new User({
       email: existingToken.email,
-      password: existingToken.password
+      password: existingToken.password,
+      username: existingToken.username,
+      firstName: existingToken.firstName,
+      lastName: existingToken.lastName,
+      location: existingToken.location,
+      gender: existingToken.gender,
+      day: existingToken.day,
+      month: existingToken.month,
+      year: existingToken.year
     });
 
     user.save(function(err) {
@@ -191,5 +219,33 @@ exports.realRegister = function(req, res, next) {
     if (existingToken) {
       console.log('realRegister-existingToken' + existingToken)
     }
+  })
+}
+
+
+// FAKE REGISTER USING FAKER PACKAGE
+
+exports.fakeRegister = function(req, res, next) {
+
+  const user = new User({
+    email: faker.internet.email(),
+    password: faker.internet.password(),
+    username: faker.name.firstName(),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
+    location: faker.address.country(),
+    city: faker.address.city(),
+    gender: faker.name.prefix(),
+    day: faker.random.number(),
+    month: faker.date.month(),
+    year: faker.random.number(),
+    avatar: faker.internet.avatar()
+  });
+
+  user.save(function(err) {
+    if (err) {
+      return next(err);
+    }
+  return res.status(200).send({success: 'user added!'});
   })
 }

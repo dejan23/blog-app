@@ -29,8 +29,9 @@ export function loginUser({ email, password}) {
          });
         // - save the JWT token
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('username', response.data.username);
         // - redirect to the special page
-        history.push('/feature');
+        history.push('/');
       })
       .catch(error => dispatch(authError(error.response.data.error)))
   }
@@ -39,6 +40,7 @@ export function loginUser({ email, password}) {
 export function logoutUser() {
   localStorage.removeItem('token')
   localStorage.removeItem('email')
+  localStorage.removeItem('username')
   return { type: UNAUTH_USER }
 }
 
@@ -57,9 +59,9 @@ export function successMessage(success) {
 }
 
 
-export function registerUser({ email, password }) {
+export function registerUser({ email, password, username, firstName, lastName, location, gender, day, month, year }) {
   return function(dispatch) {
-    axios.post(`${ROOT_URL}/auth/register`, { email, password })
+    axios.post(`${ROOT_URL}/auth/register`, { email, password, username, firstName, lastName, location, gender, day, month, year })
       .then(response => {
         history.push('/register/success');
       })
@@ -93,7 +95,7 @@ export function clearAlert() {
 
 export function fetchMessage() {
   return function(dispatch) {
-    axios.get(ROOT_URL, {
+    axios.get(`${ROOT_URL}/feature`, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {

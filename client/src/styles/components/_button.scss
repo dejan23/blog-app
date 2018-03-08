@@ -1,12 +1,28 @@
 .button {
   background: none;
-  color: black;
+  color: #666;
   border: 1px solid #505763;
   border-radius: 2px;
   margin-right: 8px;
   display: inline-block;
   padding: 1rem;
   text-decoration: none;
+
+  &--white {
+    color: white;
+    border: 1px solid white;
+    :hover {
+    	box-shadow: rgba(0,0,0,0.15) 0 7px 20px;
+    	color: #fff;
+    	text-decoration: none;
+    	border-radius: 5px;
+		}
+  }
+
+  &--search {
+    border-radius: 0;
+    border-left: 0;
+  }
 
 }
 
@@ -15,4 +31,11 @@
   border: 1px solid #f34236;
   border-radius: 2px;
   color: white;
+}
+
+.button--white:hover {
+  box-shadow: rgba(0,0,0,0.15) 0 7px 20px;
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255,255,255,0.15);
 }

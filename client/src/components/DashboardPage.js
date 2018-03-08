@@ -1,13 +1,25 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import ArticleList from './article/ArticleList';
+import Search from './article/Search';
+import FlashMessage from './FlashMessage';
+import { connect } from 'react-redux';
+
+import * as actions from '../actions/article';
 
 
-const DashboardPage = () => (
-  <div className="content-container">
-    <p>Dashboard page content</p>
-    <p><Link to='#'>Add article</Link></p>
-    <p><Link to='/feature'>Go to feature page</Link></p>
-  </div>
-)
+class DashboardPage extends React.Component {
+  componentWillMount() {
+    this.props.startSetArticles()
+  }
+  render() {
+    return (
+      <div>
+        <FlashMessage />
+        <Search />
+        <ArticleList />
+      </div>
+    )
+  }
+}
 
-export default DashboardPage;
+export default connect(null, actions)(DashboardPage)

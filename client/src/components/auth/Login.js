@@ -2,7 +2,9 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actions from '../../actions';
+import { loginUser, clearAlert } from '../../actions/auth';
+import { addFlashMessage } from '../../actions/flashMessages';
+
 
 
 // -------------- validation ----------
@@ -31,6 +33,10 @@ class Login extends React.Component {
   }
 
   submitForm = values => {
+    this.props.addFlashMessage({
+      type: 'info',
+      message: 'You logged in successfully'
+    })
     this.props.loginUser(values);
   }
 
@@ -52,6 +58,7 @@ class Login extends React.Component {
       <form className="box-layout" onSubmit={handleSubmit(this.submitForm.bind(this))}>
         <div className="box-layout__box">
         <div className="box-layout__form-group">
+          <h2>Log in to your account</h2>
           <label>Email:</label>
           <Field
             validate={[requiredEmail, email, maxLength45]}
@@ -85,7 +92,7 @@ function mapStateToProps(state) {
   return { errorMessage: state.auth.error };
 }
 
-Login = connect(mapStateToProps, actions)(Login);
+Login = connect(mapStateToProps, { loginUser, clearAlert, addFlashMessage })(Login);
 
 export default reduxForm({
   form: 'login-form'

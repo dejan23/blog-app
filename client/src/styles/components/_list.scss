@@ -10,11 +10,14 @@
 .list-body {
   margin-bottom: $m-size;
   @media (min-width: $desktop-breakpoint) {
-    margin-bottom: $l-size;
+    // margin-bottom: $l-size;
+    // footer doesnt work properly so it needs biged margin-bottom
+    margin-bottom: 8rem;
   }
 }
 
 .list-item {
+  background: white;
   border: 1px solid darken($off-white, 7%);
   border-top: none;
   color: $dark-grey;
@@ -30,7 +33,7 @@
     align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    padding: $m-size;
+    padding: 10px $s-size;
   }
 }
 
@@ -49,12 +52,68 @@
   word-break: break-all;
 }
 
+.list__lists-title {
+  margin-top: 20px;
+  text-align: center;
+	padding-bottom: 60px;
+
+  h2 {
+		font-weight: 600;
+		text-transform: uppercase;
+		line-height: 45px;
+		font-size: 2.1875rem;
+		color: rgb(51, 51, 51);
+		position: relative;
+		margin: 0;
+	}
+
+  h2:after {
+    width: 60px;
+		height: 3px;
+		background: #000;
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		margin: auto;
+		bottom: -10px;
+	}
+
+  span {
+    color: #ea5252;
+  }
+}
+
 .list-item__sub-title {
   color: $grey;
   font-size: 1.4rem;
 }
 
+.list-item__avatar-title {
+  display: flex;
+  align-items: center;
+  word-break: break-all;
+
+}
+
 .list-item__data {
+  margin: $s-size 0 0 0;
+  @media (min-width: $desktop-breakpoint) {
+    margin: 0;
+    padding-left: $s-size;
+  }
+}
+
+.list-item__avatar {
+  @media (min-width: $desktop-breakpoint) {
+    img {
+      max-width: 60px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.list-item__joined {
   margin: $s-size 0 0 0;
   @media (min-width: $desktop-breakpoint) {
     margin: 0;

@@ -1,9 +1,25 @@
 .text-input {
-  border: 1px solid #cacccd;
-  height: 20px;
-  font-size: $font-size-large;
-  font-weight: 300;
-  padding: $s-size;
+  height: 40px;
+  padding: 10px 19px;
+  border: 1px solid #e0e0e0;
+  border-radius: 2px;
+  color: #656565;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  width: 35rem;
+
+  &--search-bar {
+    border-radius: 0;
+    border-left: 0;
+    border: 1px solid white;
+    &:hover,
+     &:focus {
+       box-shadow: 0 0 9px rgba(234,82,82, 1);
+       border: 1px solid rgba(234,82,82, 1);
+     }
+     &:focus {
+       outline: 0;
+     }
+  }
 }
 
 .select {

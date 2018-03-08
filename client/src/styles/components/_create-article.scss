@@ -1,0 +1,21 @@
+.create-article {
+
+}
+
+.create-article__box {
+  background: fade-out(white, .5);
+  box-shadow: rgba(58,78,95,0.2) 0 10px 16px, rgba(58,78,95,0.05) 0 -5px 16px;
+  padding: 25px 20px;
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.create-article__title {
+  margin: 0 0 $m-size 0;
+  line-height: 1;
+}
+
+.create-article__form-group {
+  margin: 10px 0;
+}
