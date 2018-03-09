@@ -15,7 +15,7 @@ import {
 export function loginUser({ email, password}) {
   return function(dispatch) {
     // Submit email/password to the server
-    axios.post(`${config.rootURL}/auth/login`, { email, password })
+    axios.post(`${config.rootURL}auth/login`, { email, password })
       .then(response => {
         const parsedJson = JSON.parse(response.config.data)
         const email = parsedJson.email
@@ -62,7 +62,7 @@ export function successMessage(success) {
 
 export function registerUser({ email, password, username, firstName, lastName, location, gender, day, month, year }) {
   return function(dispatch) {
-    axios.post(`${config.rootURL}/auth/register`, { email, password, username, firstName, lastName, location, gender, day, month, year })
+    axios.post(`${config.rootURL}auth/register`, { email, password, username, firstName, lastName, location, gender, day, month, year })
       .then(response => {
         history.push('/register/success');
       })
@@ -72,7 +72,7 @@ export function registerUser({ email, password, username, firstName, lastName, l
 
 export function verifyUser(token) {
   return function(dispatch) {
-    axios.post(`${config.rootURL}/auth/verify/${token}`)
+    axios.post(`${config.rootURL}auth/verify/${token}`)
       .then(response => {
         console.log(response)
       })
@@ -82,7 +82,7 @@ export function verifyUser(token) {
 
 export function resendToken(email) {
   return function(dispatch) {
-    axios.put(`${config.rootURL}/auth/resendToken`, {email})
+    axios.put(`${config.rootURL}auth/resendToken`, {email})
       .then(response => {
         history.push('/');
       })
@@ -96,7 +96,7 @@ export function clearAlert() {
 
 export function fetchMessage() {
   return function(dispatch) {
-    axios.get(`${config.rootURL}/feature`, {
+    axios.get(`${config.rootURL}feature`, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {
