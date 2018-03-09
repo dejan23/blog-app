@@ -107,8 +107,8 @@ exports.register = function(req, res, next) {
           service: 'Mailgun',
           auth: {
             user:
-              'postmaster@sandbox66f8be4f8cee496a8dc4729939a7a063.mailgun.org',
-            pass: '354f225af425b84650c0255afcebd901-fab099d8-a60e4e82'
+               user: mailgunLogin,
+               pass: mailgunPass
           },
           tls: {
             rejectUnauthorized: false
@@ -156,8 +156,8 @@ exports.resendToken = function(req, res, next) {
             service: 'Mailgun',
             auth: {
               user:
-                'postmaster@sandbox66f8be4f8cee496a8dc4729939a7a063.mailgun.org',
-              pass: '354f225af425b84650c0255afcebd901-fab099d8-a60e4e82'
+                user: mailgunLogin,
+                pass: mailgunPass
             },
             tls: {
               rejectUnauthorized: false
