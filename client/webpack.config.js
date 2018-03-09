@@ -47,7 +47,7 @@ module.exports = env => {
     },
     plugins: [
       CSSExtract,
-      new UglifyJS({
+      new UglifyJsPlugin({
         uglifyOptions: {
           test: /\.js($|\?)/i,
           ecma: 8,
