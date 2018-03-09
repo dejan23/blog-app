@@ -6,8 +6,8 @@ export const setArticles = articles => ({
   type: 'SET_ARTICLES',
   articles
 });
-
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/';
+const local = 'http://localhost:5000/';
+const ROOT_URL = process.env.ROOT_URL || local;
 
 export function startSetArticles() {
   return dispatch => {
