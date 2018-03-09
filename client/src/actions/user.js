@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios/dist/axios';
 import { history } from '../routers/AppRouter';
 const config = require('../../envConfig/keys');
 
@@ -12,7 +12,7 @@ export const setUser = (user) => ({
 
 export const startSetUser = (username) => {
   return (dispatch) => {
-    axios.get(`${config.rootURL}/user/${username}`)
+    axios.get(`/user/${username}`)
       .then(response => {
         dispatch(setUser(response.data))
       })
@@ -27,7 +27,7 @@ export const setUsers = (users) => ({
 
 export const startSetUsers = () => {
   return (dispatch) => {
-    axios.get(`${config.rootURL}/users`)
+    axios.get(`/users`)
       .then(response => {
         dispatch(setUsers(response.data))
       })
