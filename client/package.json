@@ -6,7 +6,7 @@
   "author": "Dejan S",
   "scripts": {
     "build:dev": "webpack --watch",
-    "build:prod": "webpack -p --env --mode production",
+    "build:prod": "webpack -p --env production",
     "dev": "webpack-dev-server --mode development",
     "start": "node server/server.js",
     "heroku-postbuild": "npm run build:prod"
