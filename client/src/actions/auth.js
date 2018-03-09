@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
+const config = require('../../envConfig/keys');
 import {
    AUTH_USER,
    UNAUTH_USER,
@@ -9,12 +10,12 @@ import {
    SUCCESS_MESSAGE
   } from './types';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
+// const ROOT_URL = 'http://localhost:5000';
 
 export function loginUser({ email, password}) {
   return function(dispatch) {
     // Submit email/password to the server
-    axios.post(`${ROOT_URL}/auth/login`, { email, password })
+    axios.post(`${config.rootURL}/auth/login`, { email, password })
       .then(response => {
         const parsedJson = JSON.parse(response.config.data)
         const email = parsedJson.email
@@ -61,7 +62,7 @@ export function successMessage(success) {
 
 export function registerUser({ email, password, username, firstName, lastName, location, gender, day, month, year }) {
   return function(dispatch) {
-    axios.post(`${ROOT_URL}/auth/register`, { email, password, username, firstName, lastName, location, gender, day, month, year })
+    axios.post(`${config.rootURL}/auth/register`, { email, password, username, firstName, lastName, location, gender, day, month, year })
       .then(response => {
         history.push('/register/success');
       })
@@ -71,7 +72,7 @@ export function registerUser({ email, password, username, firstName, lastName, l
 
 export function verifyUser(token) {
   return function(dispatch) {
-    axios.post(`${ROOT_URL}/auth/verify/${token}`)
+    axios.post(`${config.rootURL}/auth/verify/${token}`)
       .then(response => {
         console.log(response)
       })
@@ -81,7 +82,7 @@ export function verifyUser(token) {
 
 export function resendToken(email) {
   return function(dispatch) {
-    axios.put(`${ROOT_URL}/auth/resendToken`, {email})
+    axios.put(`${config.rootURL}/auth/resendToken`, {email})
       .then(response => {
         history.push('/');
       })
@@ -95,7 +96,7 @@ export function clearAlert() {
 
 export function fetchMessage() {
   return function(dispatch) {
-    axios.get(`${ROOT_URL}/feature`, {
+    axios.get(`${config.rootURL}/feature`, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {
