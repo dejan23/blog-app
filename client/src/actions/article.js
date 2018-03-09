@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
+import config from '../../config/keys';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/'
+const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/';
+
+
 
 // SET_ARTICLES
 export const setArticles = (articles) => ({
@@ -34,6 +37,7 @@ export const startSetArticle = (_id) => {
 }
 
 // ADD_ARTICLE
+
 export const addArticle = (article) => ({
   type: 'ADD_ARTICLE',
   article
