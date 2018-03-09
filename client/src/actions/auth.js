@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
-const config = require('../../envConfig/keys');
+import config from '../../config/keys';
 import {
    AUTH_USER,
    UNAUTH_USER,

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
-const config = require('../../envConfig/keys');
+import config from '../../config/keys';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
+// const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
 
 
 
