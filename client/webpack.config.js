@@ -1,9 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-
-module.exports = (env) => {
+module.exports = env => {
   const isProduction = env === 'production';
   const CSSExtract = new ExtractTextPlugin('styles.css');
 
@@ -14,34 +14,40 @@ module.exports = (env) => {
       filename: 'bundle.js'
     },
     module: {
-      rules: [{
-        use: [{
-          loader: 'babel-loader'
-        }],
-        test: /\.js$/,
-        exclude: /node_modules/
-      }, {
-        test: /\.s?css$/,
-        use: CSSExtract.extract({
+      rules: [
+        {
           use: [
             {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true
-              }
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: true
-              }
+              loader: 'babel-loader'
             }
-          ]
-        })
-      }]
+          ],
+          test: /\.js$/,
+          exclude: /node_modules/
+        },
+        {
+          test: /\.s?css$/,
+          use: CSSExtract.extract({
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  sourceMap: true
+                }
+              },
+              {
+                loader: 'sass-loader',
+                options: {
+                  sourceMap: true
+                }
+              }
+            ]
+          })
+        }
+      ]
     },
     plugins: [
       CSSExtract,
+      new UglifyJsPlugin(),
       new webpack.DefinePlugin({
         'process.env.ROOT_URL': process.env.ROOT_URL
       })
@@ -53,4 +59,4 @@ module.exports = (env) => {
       publicPath: '/dist/'
     }
   };
-}
+};
