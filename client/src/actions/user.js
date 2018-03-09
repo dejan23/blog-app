@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
-import config from '../../config/keys';
 
-// const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
+const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/';
 
 // SET_USER
 export const setUser = (user) => ({
@@ -12,7 +11,7 @@ export const setUser = (user) => ({
 
 export const startSetUser = (username) => {
   return (dispatch) => {
-    axios.get(`${config.rootURL}user/${username}`)
+    axios.get(`${ROOT_URL}user/${username}`)
       .then(response => {
         dispatch(setUser(response.data))
       })
@@ -27,7 +26,7 @@ export const setUsers = (users) => ({
 
 export const startSetUsers = () => {
   return (dispatch) => {
-    axios.get(`${config.rootURL}users`)
+    axios.get(`${ROOT_URL}users`)
       .then(response => {
         dispatch(setUsers(response.data))
       })

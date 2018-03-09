@@ -1,10 +1,7 @@
 import axios from 'axios';
 import { history } from '../routers/AppRouter';
-import config from '../../config/keys';
 
-// const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
-
-
+const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/';
 
 // SET_ARTICLES
 export const setArticles = (articles) => ({
@@ -14,7 +11,7 @@ export const setArticles = (articles) => ({
 
 export function startSetArticles () {
   return (dispatch) => {
-    axios.get(`${config.rootURL}article`)
+    axios.get(`${ROOT_URL}article`)
       .then(response => {
         dispatch(setArticles(response.data))
       })
@@ -29,7 +26,7 @@ export const setArticle = (article) => ({
 
 export const startSetArticle = (_id) => {
   return (dispatch) => {
-    axios.get(`${config.rootURL}article/${_id}`)
+    axios.get(`${ROOT_URL}article/${_id}`)
       .then(response => {
         dispatch(setArticle(response.data))
       })
@@ -37,7 +34,6 @@ export const startSetArticle = (_id) => {
 }
 
 // ADD_ARTICLE
-
 export const addArticle = (article) => ({
   type: 'ADD_ARTICLE',
   article
@@ -45,7 +41,7 @@ export const addArticle = (article) => ({
 
 export function startAddArticle ({title, price, description}) {
   return (dispatch) => {
-    axios.post(`${config.rootURL}article/create`, {title, price, description}, {
+    axios.post(`${ROOT_URL}article/create`, {title, price, description}, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {
@@ -63,7 +59,7 @@ export const editArticle = (updatedArticle) => ({
 
 export const startEditArticle = ({_id, title, price, description, updated_at, user}) => {
   return (dispatch) => {
-    axios.put(`${config.rootURL}article/${_id}`, {title, price, description, updated_at, user}, {
+    axios.put(`${ROOT_URL}article/${_id}`, {title, price, description, updated_at, user}, {
       headers: { authorization: localStorage.getItem('token') }
     })
       .then(response => {
@@ -80,7 +76,7 @@ export const removeArticle = ({_id} = {}) => ({
 
 export const startRemoveArticle = ({_id}) => {
   return (dispatch) => {
-    axios.delete(`${config.rootURL}article/${_id}`, {
+    axios.delete(`${ROOT_URL}article/${_id}`, {
       _id: { _id },
       headers: { authorization: localStorage.getItem('token') }
     })
