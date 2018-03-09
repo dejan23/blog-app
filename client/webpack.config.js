@@ -47,7 +47,7 @@ module.exports = env => {
     },
     plugins: [
       CSSExtract,
-      new UglifyJsPlugin(),
+      new UglifyJS({uglifyOptions: {warnings: false}}),
       new webpack.DefinePlugin({
         'process.env.ROOT_URL': process.env.ROOT_URL
       })
