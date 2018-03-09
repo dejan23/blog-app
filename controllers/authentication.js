@@ -107,8 +107,8 @@ exports.register = function(req, res, next) {
           service: 'Mailgun',
           auth: {
             user:
-               user: mailgunLogin,
-               pass: mailgunPass
+              config.mailgunLogin,
+              pass: config.mailgunPass
           },
           tls: {
             rejectUnauthorized: false
@@ -118,7 +118,7 @@ exports.register = function(req, res, next) {
           from: 'no-reply@blog.com',
           to: email,
           subject: 'Account Verification Token',
-          text: `http://localhost:8080/auth/verify/${token}`
+          text: `${config.siteURL}/auth/verify/${token}`
         };
         transporter.sendMail(mailOptions, function(err) {
           if (err) {
@@ -156,7 +156,7 @@ exports.resendToken = function(req, res, next) {
             service: 'Mailgun',
             auth: {
               user:
-                user: config.mailgunLogin,
+                config.mailgunLogin,
                 pass: config.mailgunPass
             },
             tls: {
