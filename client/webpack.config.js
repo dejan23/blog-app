@@ -18,7 +18,7 @@ module.exports = env => {
         {
           use: [
             {
-              loader: 'babel-loader'
+              loader: 'babel'
             }
           ],
           test: /\.js$/,
