@@ -16,7 +16,7 @@ export function loginUser({email, password}) {
   return function(dispatch) {
     // Submit email/password to the server
     axios
-      .post(`${ROOT_URL}/auth/login`, {email, password})
+      .post(`/auth/login`, {email, password})
       .then(response => {
         const parsedJson = JSON.parse(response.config.data);
         const email = parsedJson.email;
@@ -74,7 +74,7 @@ export function registerUser({
 }) {
   return function(dispatch) {
     axios
-      .post(`${ROOT_URL}/auth/register`, {
+      .post(`/auth/register`, {
         email,
         password,
         username,
@@ -96,7 +96,7 @@ export function registerUser({
 export function verifyUser(token) {
   return function(dispatch) {
     axios
-      .post(`${ROOT_URL}/auth/verify/${token}`)
+      .post(`/auth/verify/${token}`)
       .then(response => {
         console.log(response);
       })
@@ -107,7 +107,7 @@ export function verifyUser(token) {
 export function resendToken(email) {
   return function(dispatch) {
     axios
-      .put(`${ROOT_URL}/auth/resendToken`, {email})
+      .put(`/auth/resendToken`, {email})
       .then(response => {
         history.push('/');
       })
@@ -122,7 +122,7 @@ export function clearAlert() {
 export function fetchMessage() {
   return function(dispatch) {
     axios
-      .get(`${ROOT_URL}/feature`, {
+      .get(`/feature`, {
         headers: {authorization: localStorage.getItem('token')}
       })
       .then(response => {
