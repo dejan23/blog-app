@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {history} from '../routers/AppRouter';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
+const local = 'http://localhost:5000';
+const ROOT_URL = process.env.ROOT_URL || local;
 
 // SET_USER
 export const setUser = user => ({

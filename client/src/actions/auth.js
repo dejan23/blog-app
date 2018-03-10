@@ -9,7 +9,8 @@ import {
   SUCCESS_MESSAGE
 } from './types';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
+const local = 'http://localhost:5000';
+const ROOT_URL = process.env.ROOT_URL || local;
 
 export function loginUser({email, password}) {
   return function(dispatch) {
