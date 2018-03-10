@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+require('dotenv').config();
 
 module.exports = env => {
   const isProduction = env === 'production';
@@ -16,12 +16,9 @@ module.exports = env => {
     module: {
       rules: [
         {
-          use: [
-            {
-              loader: 'babel-loader'
-            }
-          ],
-          test: /\.js$/
+          loader: 'babel-loader',
+          test: /\.js$/,
+          exclude: /node_modules/
         },
         {
           test: /\.s?css$/,
@@ -46,7 +43,6 @@ module.exports = env => {
     },
     plugins: [
       CSSExtract,
-      new UglifyJsPlugin({sourceMap: true}),
       new webpack.DefinePlugin({
         'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
       })
