@@ -48,7 +48,7 @@ module.exports = env => {
       CSSExtract,
       new UglifyJsPlugin({sourceMap: true}),
       new webpack.DefinePlugin({
-        'process.env.ROOT_URL': process.env.ROOT_URL
+        'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
       })
     ],
     devtool: isProduction ? 'source-map' : 'inline-source-map',
