@@ -13,7 +13,7 @@
     "client-server": "npm run dev --prefix client",
     "dev": "concurrently \"npm run dev-server\" \"npm run client-server\"",
     "heroku-postbuild":
-      "NPM_CONFIG_PRODUCTION=false npm run dev && npm install --prefix client && npm run build:prod --prefix client"
+      "NPM_CONFIG_PRODUCTION=false npm run dev-server && npm install --prefix client && npm run build:prod --prefix client"
   },
   "author": "Dejan S",
   "license": "ISC",
