@@ -12,7 +12,7 @@ export const setUser = user => ({
 
 export const startSetUser = username => {
   return dispatch => {
-    axios.get(`/user/${username}`).then(response => {
+    axios.get(`${ROOT_URL}/user/${username}`).then(response => {
       dispatch(setUser(response.data));
     });
   };
@@ -26,7 +26,7 @@ export const setUsers = users => ({
 
 export const startSetUsers = () => {
   return dispatch => {
-    axios.get(`/users`).then(response => {
+    axios.get(`${ROOT_URL}/users`).then(response => {
       dispatch(setUsers(response.data));
     });
   };
