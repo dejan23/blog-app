@@ -12,7 +12,7 @@ import {
 const ROOT_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:5000'
-    : 'https://blog-app1.herokuapp.com/';
+    : 'https://blog-app1.herokuapp.com';
 // const local = 'http://localhost:5000';
 // const ROOT_URL = process.env.ROOT_URL || local;
 
