@@ -42,6 +42,7 @@ module.exports = env => {
       ]
     },
     plugins: [
+      CSSExtract,
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
