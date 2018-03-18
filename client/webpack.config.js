@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = env => {
@@ -41,10 +42,11 @@ module.exports = env => {
       ]
     },
     plugins: [
-      CSSExtract,
       new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
-      })
+      }),
+      new webpack.optimize.UglifyJsPlugin()
     ],
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     devServer: {
