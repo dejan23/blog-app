@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {history} from '../routers/AppRouter';
 
-const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000/';
+const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
 
 // SET_ARTICLES
 export const setArticles = articles => ({
@@ -11,7 +11,7 @@ export const setArticles = articles => ({
 
 export function startSetArticles() {
   return dispatch => {
-    axios.get(`${ROOT_URL}article`).then(response => {
+    axios.get(`${ROOT_URL}/article`).then(response => {
       dispatch(setArticles(response.data));
     });
   };
@@ -25,7 +25,7 @@ export const setArticle = article => ({
 
 export const startSetArticle = _id => {
   return dispatch => {
-    axios.get(`${ROOT_URL}article/${_id}`).then(response => {
+    axios.get(`${ROOT_URL}/article/${_id}`).then(response => {
       dispatch(setArticle(response.data));
     });
   };
@@ -41,7 +41,7 @@ export function startAddArticle({title, price, description}) {
   return dispatch => {
     axios
       .post(
-        `${ROOT_URL}article/create`,
+        `${ROOT_URL}/article/create`,
         {title, price, description},
         {
           headers: {authorization: localStorage.getItem('token')}
@@ -72,7 +72,7 @@ export const startEditArticle = ({
   return dispatch => {
     axios
       .put(
-        `${ROOT_URL}article/${_id}`,
+        `${ROOT_URL}/article/${_id}`,
         {title, price, description, updated_at, user},
         {
           headers: {authorization: localStorage.getItem('token')}
@@ -94,7 +94,7 @@ export const removeArticle = ({_id} = {}) => ({
 export const startRemoveArticle = ({_id}) => {
   return dispatch => {
     axios
-      .delete(`${ROOT_URL}article/${_id}`, {
+      .delete(`${ROOT_URL}/article/${_id}`, {
         _id: {_id},
         headers: {authorization: localStorage.getItem('token')}
       })
