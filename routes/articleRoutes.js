@@ -5,7 +5,7 @@ const passport = require('passport');
 const requireAuth = passport.authenticate('jwt', {session: false});
 
 module.exports = function(app) {
-  app.get('/article', Article.getAll, function(req, res) {
+  app.get('/article', requireAuth, function(req, res) {
     res.send({aSecretCode: 'super123abc'});
   });
   app.get('/article/:id', Article.getById);

@@ -16,33 +16,39 @@ exports.verifyLogin = function(req, res, next) {
   const password = req.body.password;
 
   TempUser.findOne({email}, function(err, user) {
-    if(err) {return next(err)}
-    if(user) {
-      return res.status(401).send({error: 'You must verify your email'})
+    if (err) {
+      return next(err);
+    }
+    if (user) {
+      return res.status(401).send({error: 'You must verify your email'});
     }
 
     User.findOne({email}, function(err, user) {
-      if(err) {return next(err)}
-      if(!user) {
-        return res.status(401).send({error: 'Wrong pass or email'})
+      if (err) {
+        return next(err);
       }
-      if(user) {
+      if (!user) {
+        return res.status(401).send({error: 'Wrong pass or email'});
+      }
+      if (user) {
         // compare passwords - is 'password' equal to user.password?
-        user.comparePassword(password, function(err, isMatch){
-          if(err) { return done(err) }
-          if(isMatch) {
-            console.log(user)
-            return res.send({token: tokenForUser(user), username: user.username});
+        user.comparePassword(password, function(err, isMatch) {
+          if (err) {
+            return done(err);
           }
-          return res.status(401).send({error: 'Wrong pass or email'})
-        })
+          if (isMatch) {
+            console.log(user);
+            return res.send({
+              token: tokenForUser(user),
+              username: user.username
+            });
+          }
+          return res.status(401).send({error: 'Wrong pass or email'});
+        });
       }
-
-    })
-  })
-
-
-}
+    });
+  });
+};
 
 exports.register = function(req, res, next) {
   const email = req.body.email;
@@ -76,7 +82,6 @@ exports.register = function(req, res, next) {
         return next(err);
       }
 
-
       // If a user with email does exist, return an error
       if (existingTempUser) {
         return res.status(422).send({error: 'Email is in use'});
@@ -106,9 +111,8 @@ exports.register = function(req, res, next) {
         let transporter = nodemailer.createTransport({
           service: 'Mailgun',
           auth: {
-            user:
-              config.mailgunLogin,
-              pass: config.mailgunPass
+            user: config.mailgunLogin,
+            pass: config.mailgunPass
           },
           tls: {
             rejectUnauthorized: false
@@ -124,7 +128,9 @@ exports.register = function(req, res, next) {
           if (err) {
             return res.status(500).send({error: err.message});
           }
-          res.status(200).send('A verification email has been sent to ' + email + '.');
+          res
+            .status(200)
+            .send('A verification email has been sent to ' + email + '.');
         });
       });
     });
@@ -132,32 +138,37 @@ exports.register = function(req, res, next) {
 };
 
 exports.resendToken = function(req, res, next) {
-    const email = req.body.email;
+  const email = req.body.email;
 
-    TempUser.findOne({email: email}, function(err, existingUser) {
-      if (err) {
-        return next(err);
-      }
+  TempUser.findOne({email: email}, function(err, existingUser) {
+    if (err) {
+      return next(err);
+    }
 
-      if (!existingUser) {
-        return res.status(401).send({error: 'Account/email does not exist'})
-      } else {
-        // console.log(existingUser.token)
-        const existingToken = existingUser.token;
-        let token = cryptoRandomString(32);
-        // console.log(token)
+    if (!existingUser) {
+      return res.status(401).send({error: 'Account/email does not exist'});
+    } else {
+      // console.log(existingUser.token)
+      const existingToken = existingUser.token;
+      let token = cryptoRandomString(32);
+      // console.log(token)
 
-        TempUser.findOneAndUpdate({token: existingToken}, {$set: {token: token}}, {new: true}, function(err, updatedUser) {
-          if(err) {return next(err)}
+      TempUser.findOneAndUpdate(
+        {token: existingToken},
+        {$set: {token: token}},
+        {new: true},
+        function(err, updatedUser) {
+          if (err) {
+            return next(err);
+          }
           // console.log(updatedUser)
 
           let token = updatedUser.token;
-          const transporter =  nodemailer.createTransport({
+          const transporter = nodemailer.createTransport({
             service: 'Mailgun',
             auth: {
-              user:
-                config.mailgunLogin,
-                pass: config.mailgunPass
+              user: config.mailgunLogin,
+              pass: config.mailgunPass
             },
             tls: {
               rejectUnauthorized: false
@@ -171,17 +182,17 @@ exports.resendToken = function(req, res, next) {
             text: `${config.siteURL}/auth/verify/${token}`
           };
 
-           transporter.sendMail(mailOptions, function(err) {
+          transporter.sendMail(mailOptions, function(err) {
             if (err) {
               return res.status(500).send({error: err.message});
             }
             res.status(200).send({success: 'Email sent!'});
           });
-        })
-      }
-    })
-  };
-
+        }
+      );
+    }
+  });
+};
 
 exports.realRegister = function(req, res, next) {
   const token = req.params.token;
@@ -189,8 +200,8 @@ exports.realRegister = function(req, res, next) {
     if (err) {
       return next(err);
     }
-    if(!existingToken) {
-      return next(err)
+    if (!existingToken) {
+      return next(err);
     }
     const user = new User({
       email: existingToken.email,
@@ -209,24 +220,22 @@ exports.realRegister = function(req, res, next) {
       if (err) {
         return next(err);
       }
-    })
+    });
 
     TempUser.findOneAndRemove({email: existingToken.email}, function(err) {
       if (err) {
         return next(err);
       }
-    })
+    });
     if (existingToken) {
-      console.log('realRegister-existingToken' + existingToken)
+      console.log('realRegister-existingToken' + existingToken);
     }
-  })
-}
-
+  });
+};
 
 // FAKE REGISTER USING FAKER PACKAGE
 
 exports.fakeRegister = function(req, res, next) {
-
   const user = new User({
     email: faker.internet.email(),
     password: faker.internet.password(),
@@ -246,6 +255,6 @@ exports.fakeRegister = function(req, res, next) {
     if (err) {
       return next(err);
     }
-  return res.status(200).send({success: 'user added!'});
-  })
-}
+    return res.status(200).send({success: 'user added!'});
+  });
+};
