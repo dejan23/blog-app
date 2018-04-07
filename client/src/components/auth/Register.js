@@ -33,12 +33,17 @@ class Register extends Component {
   }
 
   submitForm = values => {
-    this.props.addFlashMessage({
-      type: 'success',
-      message: 'You registered successfully. Please check your email inbox to activate account!'
-    })
-    this.props.registerUser(values)
+    return new Promise(resolve => {
+      this.props.registerUser(values)
+      return new Promise(resolve => {
+        this.props.addFlashMessage({
+          type: 'success',
+          message: 'You registered successfully. Please check your email inbox to activate account!'
+        })
+     })
+   })
   }
+
 
   renderAlert() {
     if(this.props.errorMessage) {
@@ -51,7 +56,7 @@ class Register extends Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting } = this.props;
 
     return (
       <form className="box-layout" onSubmit={handleSubmit(this.submitForm.bind(this))}>
@@ -86,7 +91,7 @@ class Register extends Component {
         </div>
 
         {this.renderAlert()}
-        <button className="button button--register" type="submit">Register</button>
+        <button className="button button--register" type="submit" disabled={pristine || submitting}>Register</button>
         <p>Already have an account? <Link to='/login'>Login</Link></p>
         <p>Haven't received confirmation token? <Link to='/auth/resend'>Resend token</Link></p>
       </div>

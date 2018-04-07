@@ -1,19 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import FlashMessage from './FlashMessage'
-import * as actions from '../actions/flashMessages';
+import * as actions from '../actions/article';
 
 
 class FlashMessages extends React.Component {
 
   componentWillUnmount() {
-    if(this.props.message) {
       this.props.clearFlashMessage()
-    }
   }
 
   componentDidMount() {
-    if(this.props.message) {
+    if(this.props.success) {
       setTimeout(() => {
         this.props.clearFlashMessage()
       }, 20000)
@@ -25,11 +23,11 @@ class FlashMessages extends React.Component {
   }
 
   renderMessage() {
-    if(this.props.type === 'success') {
+    if(this.props.success) {
       return (
         <div className="success">
           <button onClick={this.closeMessage.bind(this)} className="close"><span>&times;</span></button>
-          {this.props.message}
+          {this.props.success}
         </div>
       )
     } else if (this.props.type === 'info') {
@@ -54,7 +52,8 @@ class FlashMessages extends React.Component {
 const mapStateToProps = (state) => {
   return {
     message: state.flashMessages.message,
-    type: state.flashMessages.type
+    type: state.flashMessages.type,
+    success: state.articles.success
   }
 }
 

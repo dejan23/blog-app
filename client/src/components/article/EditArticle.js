@@ -1,23 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ArticleForm from './ArticleForm';
+import { startEditArticle, startRemoveArticle, startSetArticles } from '../../actions/article'
+import { addFlashMessage } from '../../actions/flashMessages'
+
 
 export class EditArticle extends React.Component {
-
-
   onRemove = () => {
-   this.props.addFlashMessage({
-     message: 'Article deleted',
-     type: 'info'
-   })
-   // this.props.startRemoveArticle( this.props.article._id );
-   this.props.history.push('/');
+    this.props.startRemoveArticle( this.props.article._id );
  };
 
   render() {
     return (
       <div className="content-container">
-          <h1>Edit article</h1>
           <ArticleForm
             {...this.props}
             article={this.props.article}
@@ -29,13 +24,14 @@ export class EditArticle extends React.Component {
 }
 
 const mapStateToProps = (state, props) => ({
-  article: state.articles.find((article) => article._id === props.match.params.id)
+  article: state.articles.article
 })
 
 const mapDispatchToProps = (dispatch, props) => ({
   startEditArticle: (_id, article) => dispatch(startEditArticle(_id, article)),
   startRemoveArticle: (_id) => dispatch(startRemoveArticle({_id})),
-  addFlashMessage: (message) => dispatch(addFlashMessage(message))
+  addFlashMessage: (message) => dispatch(addFlashMessage(message)),
+  startSetArticles: () => dispatch(startSetArticles())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditArticle)

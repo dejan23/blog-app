@@ -29,9 +29,16 @@ const ProfilePage = props => {
               <li>Birthday: <strong>{`${user.day} ${user.month}, ${user.year}`}</strong></li>
               <li>Gender: <strong>{user.gender}</strong></li>
               <li>Joined: <strong>{moment(user.created_at).format('MMMM Do, YYYY')}</strong></li>
+              <li>Number of articles: <strong>{user.articles.length}</strong></li>
             </div>
+            <Link style={{textDecoration: 'none'}} to={`/users/${user.username}/articles`}>
+              <h3 style={{color: '#ea5252'}}>Show all articles</h3>
+            </Link>
+
             <div className="profile__button">
-              <button className="button">Edit</button>
+              <Link className="button" to={`/users/${user.username}/edit`}>
+                Edit
+              </Link>
               <Link to="/users" className="button">List of all users</Link>
             </div>
       </div>

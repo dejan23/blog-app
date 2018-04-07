@@ -2,16 +2,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const mongoose = require('mongoose');
-const keys = require('./config/keys');
 const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet');
+require('dotenv').config();
 
+mongoose.Promise = global.Promise;
 // DB setup
-mongoose.connect(keys.mongoURI, function(err, db) {
+mongoose.connect(process.env.MONGO_URI, function(err, db) {
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
   } else {
-    console.log('Connection established to', url);
+    console.log('Connection established to mongoDB server.');
   }
 });
 
@@ -22,11 +24,37 @@ mongoose.connection
   });
 
 // App setup
+app.use(helmet());
 app.use(cors());
-app.use(bodyParser.json({type: '*/*'}));
+app.use(bodyParser.json());
+
+// Routes
 require('./routes/authRoutes')(app);
-require('./routes/articleRoutes')(app);
-require('./routes/userRoutes')(app);
+require('./routes/articlesRoutes')(app);
+require('./routes/usersRoutes')(app);
+
+// Catch 404 errors and forward them to error handler
+app.use((req, res, next) => {
+  const err = new Error('Not Found')
+  err.status = 404;
+  next(err);
+})
+
+// Error handler function
+app.use((err, req, res, next) => {
+  const error = process.env.NODE_ENV === 'production' ? {} : err;
+  const status = err.status || 500;
+
+  // Respond to client
+res.status(status).json({
+  error: {
+    message: error.message
+  }
+})
+
+  // Respond to ourselves
+  console.error(err);
+})
 
 if (process.env.NODE_ENV === 'production') {
   // express will serve up production assets, like main.js or main.css

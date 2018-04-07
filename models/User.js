@@ -12,15 +12,8 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
+    required: true,
+    select: false
   },
   username: {
     type: String
@@ -51,8 +44,12 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String
-  }
-})
+  },
+  articles: [{
+    type: mongoose.Schema.ObjectId,
+    ref: 'Article'
+  }]
+}, {timestamps: true})
 
 
 

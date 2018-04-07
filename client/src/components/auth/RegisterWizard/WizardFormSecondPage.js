@@ -42,7 +42,6 @@ const renderLocationSelector = ({ input, meta: { touched, error } }) => (
 
 class WizardFormSecondPage extends Component {
   submitForm = values => {
-    console.log(values)
     this.props.addFlashMessage({
       type: 'success',
       message: 'You registered successfully. Please check your email inbox to activate account!'
@@ -73,7 +72,7 @@ class WizardFormSecondPage extends Component {
             name="firstName"
             type="text"
             component={renderField}
-            label="First Name"
+            label="First Name*"
           />
         </div>
         <div className="box-layout__form-group">
@@ -81,7 +80,7 @@ class WizardFormSecondPage extends Component {
             name="lastName"
             type="text"
             component={renderField}
-            label="Last Name"
+            label="Last Name*"
           />
         </div>
         <div className="box-layout__form-group">
@@ -89,7 +88,7 @@ class WizardFormSecondPage extends Component {
             name="username"
             type="text"
             component={renderField}
-            label="Username"
+            label="Username*"
           />
         </div>
         <div className="box-layout__form-group-input">

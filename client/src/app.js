@@ -41,6 +41,5 @@ if (token) {
   },500)
   // renderApp()
 } else {
-  store.dispatch(startSetArticles())
   renderApp()
 }

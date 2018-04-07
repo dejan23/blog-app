@@ -13,6 +13,9 @@ module.exports = function(app) {
   app.post('/auth/login', Authentication.verifyLogin)
   app.post('/auth/register', Authentication.register)
   app.post('/auth/fakeregister', Authentication.fakeRegister)
+  app.post('/users/:id/fakearticle', Authentication.fakeArticle)
   app.post('/auth/verify/:token', Authentication.realRegister)
-  app.put('/auth/resendToken', Authentication.resendToken)
+  app.put('/auth/resendToken', Authentication.token, (req, res) => {
+
+  })
 }

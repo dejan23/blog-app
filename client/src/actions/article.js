@@ -3,15 +3,53 @@ import {history} from '../routers/AppRouter';
 
 const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
 
+export function successMessage(success) {
+  return {
+    type: 'SUCCESS_MESSAGE',
+    payload: success
+  };
+}
+
+export const clearFlashMessage = () => ({
+  type: 'CLEAR_FLASH_MESSAGE'
+})
+
+// SEARCH
+export const setSearch = searchResult => ({
+  type: 'SET_SEARCH',
+  payload: searchResult
+});
+
+export const searchFail = (error) => ({
+  type: 'SEARCH_FAIL',
+  payload: error
+})
+
+export const clearSearch = () => ({
+  type: 'CLEAR_SEARCH'
+})
+
+export function startSearch (query) {
+  return dispatch => {
+    axios.get(`${ROOT_URL}/search?title=${query}`).then(response => {
+      dispatch(setSearch(response.data))
+    })
+    .catch(error => {
+      dispatch(clearSearch())
+      dispatch(searchFail(error.response.data.error))
+    })
+  };
+}
+
 // SET_ARTICLES
 export const setArticles = articles => ({
   type: 'SET_ARTICLES',
-  articles
+  payload: articles
 });
 
-export function startSetArticles() {
+export function startSetArticles () {
   return dispatch => {
-    axios.get(`${ROOT_URL}/article`).then(response => {
+    axios.get(`${ROOT_URL}/articles`).then(response => {
       dispatch(setArticles(response.data));
     });
   };
@@ -20,17 +58,30 @@ export function startSetArticles() {
 // SET_ARTICLE
 export const setArticle = article => ({
   type: 'SET_ARTICLE',
-  article
+  payload: article
 });
 
-export const startSetArticle = _id => {
+export function startSetArticle(_id) {
   return dispatch => {
-    axios.get(`${ROOT_URL}/article/${_id}`).then(response => {
+    axios.get(`${ROOT_URL}/articles/${_id}`).then(response => {
       dispatch(setArticle(response.data));
     });
   };
 };
 
+// SET_USER_ARTICLES
+export const setUserArticles = articles => ({
+  type: 'SET_USER_ARTICLES',
+  payload: articles
+});
+
+export function startSetUserArticles(_id) {
+  return dispatch => {
+    axios.get(`${ROOT_URL}/users/${_id}/articles`).then(response => {
+      dispatch(setUserArticles(response.data));
+    });
+  };
+};
 // ADD_ARTICLE
 export const addArticle = article => ({
   type: 'ADD_ARTICLE',
@@ -41,7 +92,7 @@ export function startAddArticle({title, price, description}) {
   return dispatch => {
     axios
       .post(
-        `${ROOT_URL}/article/create`,
+        `${ROOT_URL}/articles`,
         {title, price, description},
         {
           headers: {authorization: localStorage.getItem('token')}
@@ -49,6 +100,7 @@ export function startAddArticle({title, price, description}) {
       )
       .then(response => {
         dispatch(addArticle(response.data.article));
+        dispatch(successMessage(response.data.success))
         history.push('/');
       })
       .catch(err => res.send(err));
@@ -61,25 +113,16 @@ export const editArticle = updatedArticle => ({
   updatedArticle
 });
 
-export const startEditArticle = ({
-  _id,
-  title,
-  price,
-  description,
-  updated_at,
-  user
-}) => {
+export const startEditArticle = ({ _id, title, price, description }) => {
   return dispatch => {
-    axios
-      .put(
-        `${ROOT_URL}/article/${_id}`,
-        {title, price, description, updated_at, user},
+    axios.patch(`${ROOT_URL}/articles/${_id}`, {title, price, description },
         {
           headers: {authorization: localStorage.getItem('token')}
         }
       )
       .then(response => {
-        dispatch(editArticle(response.data.updatedArticle));
+        dispatch(editArticle(response.data));
+        dispatch(successMessage(response.data.success))
         history.push('/');
       });
   };
@@ -93,13 +136,13 @@ export const removeArticle = ({_id} = {}) => ({
 
 export const startRemoveArticle = ({_id}) => {
   return dispatch => {
-    axios
-      .delete(`${ROOT_URL}/article/${_id}`, {
-        _id: {_id},
+    axios.delete(`${ROOT_URL}/articles/${_id}`, {
+        id: {_id},
         headers: {authorization: localStorage.getItem('token')}
       })
       .then(response => {
         dispatch(removeArticle({_id}));
+        dispatch(successMessage(response.data.success))
         history.push('/');
       });
   };

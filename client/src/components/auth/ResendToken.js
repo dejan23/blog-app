@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, isSubmitting } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/auth';
@@ -23,15 +23,14 @@ const renderInput = field =>
      <div className="error">{field.meta.error}</div>}
   </div>
 
-class Login extends React.Component {
+class ResendToken extends React.Component {
 
   componentWillUnmount() {
     return this.props.clearAlert();
   }
 
   submitForm = values => {
-    this.props.resendToken(values.email);
-    console.log(values.email)
+     this.props.resendToken(values.email)
   }
 
   renderAlert() {
@@ -54,8 +53,13 @@ class Login extends React.Component {
     }
   }
 
+  onClick() {
+    <img className="loader__image" src="/images/loader.gif" />
+
+  }
+
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting } = this.props;
 
     return (
 
@@ -71,7 +75,7 @@ class Login extends React.Component {
             type="text"/>
         </div>
         {this.renderAlert()}
-        <button className="button button--login" type="submit">Send</button>
+        <button className="button button--register" type="submit" disabled={pristine || submitting}>Send</button>
 
       </div>
       </form>
@@ -88,8 +92,8 @@ function mapStateToProps(state) {
    };
 }
 
-Login = connect(mapStateToProps, actions)(Login);
+ResendToken = connect(mapStateToProps, actions)(ResendToken);
 
 export default reduxForm({
-  form: 'login-form'
-})(Login)
+  form: 'resend-form'
+})(ResendToken)

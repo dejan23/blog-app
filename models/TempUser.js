@@ -12,19 +12,13 @@ const TempUserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
-  },
-  created_at: {
-    type: Date,
-    default: Date.now
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
+    required: true,
+    select: false
   },
   token: {
     type: String,
-    expires: '1d'
+    expires: '1d',
+    select: false
   },
   username: {
     type: String
@@ -50,7 +44,7 @@ const TempUserSchema = new mongoose.Schema({
   year: {
     type: String
   }
-})
+}, {timestamps: true})
 
 // On save hook, encrypt password
 // Before saving a mode, run this function

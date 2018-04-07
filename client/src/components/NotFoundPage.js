@@ -8,7 +8,6 @@ const NotFoundPage = () => (
         <h5 className="not-found-page__text">We can't find the page you're looking for.</h5>
         <p className="not-found-page__text">(404) - <Link className="not-found-page--text" to="/">Go home</Link></p>
       </div>
-
     </div>
   )
 

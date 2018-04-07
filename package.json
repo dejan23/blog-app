@@ -1,7 +1,7 @@
 {
   "name": "blog-app-server-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "server-api",
   "main": "index.js",
   "engines": {
     "node": "8.4.0",
@@ -12,8 +12,7 @@
     "dev-server": "nodemon index.js",
     "client-server": "npm run dev --prefix client",
     "dev": "concurrently \"npm run dev-server\" \"npm run client-server\"",
-    "heroku-postbuild":
-      "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build:prod --prefix client"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build:prod --prefix client"
   },
   "author": "Dejan S",
   "license": "ISC",
@@ -23,8 +22,11 @@
     "concurrently": "^3.5.1",
     "cors": "^2.8.4",
     "crypto-random-string": "^1.0.0",
+    "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "faker": "^4.1.0",
+    "helmet": "^3.12.0",
+    "joi": "^13.1.2",
     "jsonwebtoken": "^8.1.1",
     "mongoose": "^5.0.4",
     "nodemailer": "^4.6.0",
@@ -32,5 +34,8 @@
     "passport": "^0.4.0",
     "passport-jwt": "^3.0.1",
     "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^2.0.13"
   }
 }

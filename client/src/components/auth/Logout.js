@@ -5,10 +5,7 @@ import {addFlashMessage} from '../../actions/flashMessages';
 
 class Logout extends React.Component {
   componentWillMount() {
-    this.props.addFlashMessage({
-      type: 'info',
-      message: 'You are now logged out'
-    });
+    
     this.props.logoutUser();
   }
 

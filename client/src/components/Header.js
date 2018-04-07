@@ -2,17 +2,17 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-const username = localStorage.getItem('username');
 
 class Header extends React.Component {
-
   renderLinks() {
+    const username = localStorage.getItem('username');
+
     if(this.props.authenticated) {
       return (
         <div className="auth">
           <Link className="header__username" to={`/user/${username}`}>Hello <span>{username}</span></Link>
           <Link className="button" to="/create">Post an article</Link>
-          <Link className="button" to={`/user/${username}`}>Profile</Link>
+          <Link className="button" to={`/users/${username}`}>Profile</Link>
           <Link className="button" to="/logout">Logout</Link>
         </div>
       )

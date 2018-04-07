@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import ArticleListItem from './ArticleListItem'
-import {startSetArticles} from '../../actions/article';
+import {startSetUserArticles} from '../../actions/article';
 
 
-export class ArticleList extends React.Component {
+export class UserArticles extends React.Component {
   componentWillMount() {
-     this.props.startSetArticles();
+     this.props.startSetUserArticles(this.props.match.params.id);
    }
 
   render() {
@@ -14,8 +14,7 @@ export class ArticleList extends React.Component {
 
     return (
       <div>
-      <div className="list__lists-title"><h2>List of <span>articles</span></h2></div>
-
+      <div className="list__lists-title"><h2>List of <span>{this.props.match.params.id}</span> articles</h2></div>
       <div className="content-container content-container--list">
       <div className="list-header">
         <div className="show-for-mobile">List of articles</div>
@@ -46,4 +45,4 @@ const mapStateToProps = (state) =>{
   };
 }
 
-export default connect(mapStateToProps, {startSetArticles})(ArticleList);
+export default connect(mapStateToProps, {startSetUserArticles})(UserArticles);

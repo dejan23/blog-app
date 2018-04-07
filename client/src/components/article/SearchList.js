@@ -1,12 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-moment.locale();
 import numeral from 'numeral';
 
-
-
-const ArticleListItem = ({ _id, title, price, description, picture, createdAt, author }) => (
+const SearchList = ({ _id, title, price, description, picture, createdAt, author }) => (
   <Link className="list-item" to={`/article/${_id}`}>
     <div className="list-item__content">
       <div  className="list-item__avatar">
@@ -21,13 +18,12 @@ const ArticleListItem = ({ _id, title, price, description, picture, createdAt, a
       </div>
     </div>
     <div className="list-item__content--info">
-      <p className="list-item__joined">{moment(createdAt).format('lll')}
+      <p className="list-item__joined">{moment(createdAt).format('MMMM Do, YYYY')},
         <br />
-        <strong>{author === null ? 'deleted author' : author.username}</strong>
+        by <strong>{author === null ? 'deleted author' : author.username}</strong>
       </p>
     </div>
   </Link>
-
 )
 
-export default ArticleListItem;
+export default SearchList;

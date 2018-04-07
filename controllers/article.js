@@ -1,103 +1,191 @@
 const Article = require('../models/Article');
+const User = require('../models/User');
 
-exports.getAll = function(req, res, next) {
-  Article.find({}, function(err, allArticles) {
-    if (err) {
-      return next(err);
-    }
-    return res.status(200).send(allArticles);
-  }).populate('user');
+exports.getAll = async (req, res, next) => {
+  try {
+    const articles = await Article.find({})
+    .lean()
+    .populate('author', 'username')
+    .sort({"createdAt": -1})
+    res.status(200).send(articles);
+  } catch(err) {
+    next(err);
+  }
 };
 
-exports.getById = function(req, res, next) {
-  Article.findById(req.params.id, function(err, article) {
-    if (err) {
-      return next(err);
+exports.find = async (req, res, next) => {
+  try {
+    const regexp = new RegExp("^"+ req.query.title);
+    const articles = await Article.find({ title: regexp})
+      .lean()
+      .populate('author', 'username')
+      .sort({"createdAt": 1})
+    if(articles.length === 0) {
+      return res.status(404).send({error: 'Nothing found'});
     }
-    return res.status(200).send(article);
-  }).populate('user');
+    res.status(200).send(articles);
+  } catch(err) {
+    next(err)
+  }
+}
+
+exports.getById = async (req, res, next) => {
+  try {
+    const article = await Article.findById(req.params.id).populate('author')
+    if(!article) {
+      return res.status(404).send({error: 'Article is not found'});
+   }
+    res.status(200).json(article);
+  } catch(err) {
+    next(err);
+  }
 };
 
-exports.create = function(req, res, next) {
-  const user = req.user;
-  const title = req.body.title;
-  const price = req.body.price;
-  const description = req.body.description;
+exports.create = async (req, res, next) => {
+  try {
+    // 1. find the actiual author
+    const user = req.user;
+    const author = await User.findById(user._id);
+    // 2. create a new article
+    const newArticle = req.body
+    delete newArticle.author;
 
-  if (!title || !price || !description) {
-    return res
-      .status(422)
-      .send({error: 'You must provide title and price and description'});
+    const article = new Article(newArticle);
+    article.author = author;
+    await article.save()
+
+    // 3. add newsly created article to the actiual author
+    author.articles.push(article);
+    await author.save();
+
+    res.status(200).json({
+      article: article,
+      success: "Article successfully posted"
+    })
+  } catch(err) {
+    next(err)
+  }
+};
+
+//   const user = req.user;
+//   const title = req.body.title;
+//   const price = req.body.price;
+//   const description = req.body.description;
+//
+//   if (!title || !price || !description) {
+//     return res
+//       .status(422)
+//       .send({error: 'You must provide title and price and description'});
+//   }
+//
+//   const article = new Article({
+//     description,
+//     title,
+//     price,
+//     user
+//   });
+//
+//   article
+//     .save()
+//     .then(result => {
+//       res.status(201).json({
+//         message: 'Article successfully added',
+//         article: result
+//       });
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       res.status(500).json({
+//         error: err
+//       });
+//     });
+
+
+exports.update = async(req, res, next) => {
+  try {
+    const { id } = req.params;
+    const updatedArticle = req.body;
+    const article = await Article.findByIdAndUpdate(id, updatedArticle, {new: true});
+    if(!article) {
+      return res.status(404).send({error: 'Article is not found'});
+   }
+    res.status(200).json({
+      article: article,
+      success: "Article successfully updated"
+    })
+  } catch(err) {
+    next(err)
   }
 
-  const article = new Article({
-    description,
-    title,
-    price,
-    user
-  });
-
-  article
-    .save()
-    .then(result => {
-      res.status(201).json({
-        message: 'Article successfully added',
-        article: result
-      });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
+  // const user = req.user;
+  // const id = req.params.id;
+  // const title = req.body.title;
+  // const price = req.body.price;
+  // const description = req.body.description;
+  // const updated_at = new Date();
+  //
+  // Article.findOneAndUpdate(
+  //   {_id: id},
+  //   {$set: {title, price, description, updated_at, user}},
+  //   {new: true},
+  //   function(err, updatedArticle) {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     if (!updatedArticle) {
+  //       return res
+  //         .status(200)
+  //         .send({message: 'Article by that id was not found'});
+  //     }
+  //     const response = {
+  //       user: user,
+  //       message: 'Article successfully updated',
+  //       updatedArticle
+  //     };
+  //     return res.status(200).send(response);
+  //   }
+  // );
 };
 
-exports.update = function(req, res, next) {
-  const user = req.user;
-  const id = req.params.id;
-  const title = req.body.title;
-  const price = req.body.price;
-  const description = req.body.description;
-  const updated_at = new Date();
-
-  Article.findOneAndUpdate(
-    {_id: id},
-    {$set: {title, price, description, updated_at, user}},
-    {new: true},
-    function(err, updatedArticle) {
-      if (err) {
-        return next(err);
-      }
-      if (!updatedArticle) {
-        return res
-          .status(200)
-          .send({message: 'Article by that id was not found'});
-      }
-      const response = {
-        user: user,
-        message: 'Article successfully updated',
-        updatedArticle
-      };
-      return res.status(200).send(response);
+exports.delete = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    // get the article
+    const article = await Article.findById(id)
+    if(!article) {
+      return res.status(404).send({error: 'Article is not found'});
+   }
+    // get the author
+    const authorId = article.author;
+    const author = await User.findById(authorId);
+    if(!author) {
+      return res.status(404).send({error: 'Author of this article is not found'});
     }
-  );
-};
+    // remove article
+    await article.remove();
+    //remove article from authors articles list
+    author.articles.pull(article);
+    await author.save();
 
-exports.delete = function(req, res, next) {
-  const id = req.params.id;
+    res.status(200).json({ success: "Article is deleted" })
+  } catch(err) {
+    next(err)
+  }
 
-  Article.findByIdAndRemove(id, function(err, removedArticle) {
-    if (err) return res.status(500).send(err);
-    if (!removedArticle) {
-      return res
-        .status(200)
-        .send({message: 'Article by that id was not found'});
-    }
-    const response = {
-      message: 'Article successfully deleted',
-      removedArticle
-    };
-    return res.status(200).send(response);
-  });
+
+  // const id = req.params.id;
+  //
+  // Article.findByIdAndRemove(id, function(err, removedArticle) {
+  //   if (err) return res.status(500).send(err);
+  //   if (!removedArticle) {
+  //     return res
+  //       .status(200)
+  //       .send({message: 'Article by that id was not found'});
+  //   }
+  //   const response = {
+  //     message: 'Article successfully deleted',
+  //     removedArticle
+  //   };
+  //   return res.status(200).send(response);
+  // });
 };

@@ -1,54 +1,48 @@
 const TempUser = require('../models/TempUser');
 const User = require('../models/User');
+const Article = require('../models/Article');
 const jwt = require('jsonwebtoken');
-const config = require('../config/keys');
 const cryptoRandomString = require('crypto-random-string');
 const nodemailer = require('nodemailer');
 const faker = require('faker');
 
 function tokenForUser(user) {
   const timestamp = new Date().getTime();
-  return jwt.sign({sub: user.id, iat: timestamp}, config.secretJWT);
+  return jwt.sign({sub: user.id, iat: timestamp}, process.env.SECRET_JWT);
 }
 
-exports.verifyLogin = function(req, res, next) {
-  const email = req.body.email;
-  const password = req.body.password;
+exports.verifyLogin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-  TempUser.findOne({email}, function(err, user) {
-    if (err) {
-      return next(err);
-    }
-    if (user) {
+    const tempUser = await TempUser.findOne({email}).select("+password");
+    if (tempUser) {
       return res.status(401).send({error: 'You must verify your email'});
     }
 
-    User.findOne({email}, function(err, user) {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
+    const user = await User.findOne({email}).select("+password");
+    if (!user) {
+      return res.status(401).send({error: 'Wrong pass or email'});
+    }
+    if (user) {
+      // compare passwords - is 'password' equal to user.password?
+      user.comparePassword(password, function(err, isMatch) {
+        if (err) {
+          return done(err);
+        }
+        if (isMatch) {
+          return res.send({
+            token: tokenForUser(user),
+            username: user.username
+          });
+        }
         return res.status(401).send({error: 'Wrong pass or email'});
-      }
-      if (user) {
-        // compare passwords - is 'password' equal to user.password?
-        user.comparePassword(password, function(err, isMatch) {
-          if (err) {
-            return done(err);
-          }
-          if (isMatch) {
-            console.log(user);
-            return res.send({
-              token: tokenForUser(user),
-              username: user.username
-            });
-          }
-          return res.status(401).send({error: 'Wrong pass or email'});
-        });
-      }
-    });
-  });
-};
+      });
+    }
+  } catch(err) {
+    next(err)
+  }
+}
 
 exports.register = function(req, res, next) {
   const email = req.body.email;
@@ -111,18 +105,18 @@ exports.register = function(req, res, next) {
         let transporter = nodemailer.createTransport({
           service: 'Mailgun',
           auth: {
-            user: config.mailgunLogin,
-            pass: config.mailgunPass
+            user: process.env.MAILGUN_LOGIN,
+            pass: process.env.MAILGUN_PASS
           },
           tls: {
             rejectUnauthorized: false
           }
         });
         let mailOptions = {
-          from: 'no-reply@blog.com',
+          from: 'no-reply@blog-app',
           to: email,
           subject: 'Account Verification Token',
-          text: `${config.siteURL}/auth/verify/${token}`
+          text: `Here is your verification token: ${process.env.SITE_URL}/auth/verify/${token}`
         };
         transporter.sendMail(mailOptions, function(err) {
           if (err) {
@@ -133,109 +127,95 @@ exports.register = function(req, res, next) {
             .send('A verification email has been sent to ' + email + '.');
         });
       });
-    });
-  });
+    }).select("+password");
+  }).select("+password");
 };
 
-exports.resendToken = function(req, res, next) {
-  const email = req.body.email;
-
-  TempUser.findOne({email: email}, function(err, existingUser) {
-    if (err) {
-      return next(err);
-    }
-
-    if (!existingUser) {
+exports.token = async (req, res, next) => {
+  try {
+    const email = req.body.email;
+    const tempUser = await TempUser.findOne({email}).select("+token")
+    if (!tempUser) {
       return res.status(401).send({error: 'Account/email does not exist'});
-    } else {
-      // console.log(existingUser.token)
-      const existingToken = existingUser.token;
-      let token = cryptoRandomString(32);
-      // console.log(token)
-
-      TempUser.findOneAndUpdate(
-        {token: existingToken},
-        {$set: {token: token}},
-        {new: true},
-        function(err, updatedUser) {
-          if (err) {
-            return next(err);
-          }
-          // console.log(updatedUser)
-
-          let token = updatedUser.token;
-          const transporter = nodemailer.createTransport({
-            service: 'Mailgun',
-            auth: {
-              user: config.mailgunLogin,
-              pass: config.mailgunPass
-            },
-            tls: {
-              rejectUnauthorized: false
-            }
-          });
-
-          const mailOptions = {
-            from: 'no-reply@blog.com',
-            to: email,
-            subject: 'Account Verification Token',
-            text: `${config.siteURL}/auth/verify/${token}`
-          };
-
-          transporter.sendMail(mailOptions, function(err) {
-            if (err) {
-              return res.status(500).send({error: err.message});
-            }
-            res.status(200).send({success: 'Email sent!'});
-          });
-        }
-      );
     }
-  });
-};
 
-exports.realRegister = function(req, res, next) {
-  const token = req.params.token;
-  TempUser.findOne({token: token}, function(err, existingToken) {
-    if (err) {
-      return next(err);
-    }
-    if (!existingToken) {
-      return next(err);
-    }
+    const oldToken = tempUser.token;
+    let newToken = cryptoRandomString(32);
+
+    const tempUserWithNewToken = await TempUser.findOneAndUpdate(
+        {token: oldToken},
+        {$set: {token: newToken}},
+        {new: true}
+      ).select("+token")
+
+    const tokenForMailing = tempUserWithNewToken.token;
+
+    const transporter = nodemailer.createTransport({
+      service: 'Mailgun',
+      auth: {
+        user: process.env.MAILGUN_LOGIN,
+        pass: process.env.MAILGUN_PASS
+      },
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
+
+    const mailOptions = {
+      from: `no-reply@blog-app`,
+      to: email,
+      subject: 'Account Verification Token',
+      text: `Here is your verification token: ${process.env.SITE_URL}/auth/verify/${tokenForMailing}`
+    };
+
+    transporter.sendMail(mailOptions, function(err) {
+      if (err) {
+        return res.status(500).send({error: err.message});
+      }
+      res.status(200).send({success: 'Email sent!', tempUserWithNewToken});
+    });
+  } catch(err) {
+    next(err)
+  }
+}
+
+
+
+exports.realRegister = async (req, res, next) => {
+  try {
+    const {token} = req.params
+    const tempUser = await TempUser.findOne({token}).select("+password +token");
+    if(!tempUser) { return res.status(401).send({error: 'Invalid token'})};
     const user = new User({
-      email: existingToken.email,
-      password: existingToken.password,
-      username: existingToken.username,
-      firstName: existingToken.firstName,
-      lastName: existingToken.lastName,
-      location: existingToken.location,
-      gender: existingToken.gender,
-      day: existingToken.day,
-      month: existingToken.month,
-      year: existingToken.year
-    });
-
-    user.save(function(err) {
-      if (err) {
-        return next(err);
-      }
-    });
-
-    TempUser.findOneAndRemove({email: existingToken.email}, function(err) {
-      if (err) {
-        return next(err);
-      }
-    });
-    if (existingToken) {
-      console.log('realRegister-existingToken' + existingToken);
-    }
-  });
+       email: tempUser.email,
+       password: tempUser.password,
+       username: tempUser.username,
+       firstName: tempUser.firstName,
+       lastName: tempUser.lastName,
+       location: tempUser.location,
+       gender: tempUser.gender,
+       day: tempUser.day,
+       month: tempUser.month,
+       year: tempUser.year
+     });
+    user.save();
+    await TempUser.findOneAndRemove({email: tempUser.email});
+    res.status(200).json('User successfully verifed');
+  } catch(err) {
+    next(err)
+  }
 };
+
+
+
+
+
+
 
 // FAKE REGISTER USING FAKER PACKAGE
 
 exports.fakeRegister = function(req, res, next) {
+
   const user = new User({
     email: faker.internet.email(),
     password: faker.internet.password(),
@@ -258,3 +238,36 @@ exports.fakeRegister = function(req, res, next) {
     return res.status(200).send({success: 'user added!'});
   });
 };
+
+exports.fakeArticle = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log('id', id)
+
+    // 1. find the actiual author
+    const author = await User.findById({_id: id});
+
+    // 2. create a new article
+    function getRandomInt(max) {
+      return Math.floor(Math.random() * Math.floor(max));
+    }
+    const newArticle = {
+      title: `opel ${getRandomInt(53)}`,
+      description: faker.lorem.lines(),
+      price: faker.random.number(),
+    }
+    delete newArticle.author;
+
+    const article = new Article(newArticle);
+    article.author = author;
+    await article.save()
+
+    // 3. add newsly created article to the actiual author
+    author.articles.push(article);
+    await author.save();
+
+    res.status(200).json(article)
+  } catch(err) {
+    next(err)
+  }
+}

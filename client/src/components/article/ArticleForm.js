@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, isSubmitting } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startAddArticle } from '../../actions/article';
@@ -43,35 +43,23 @@ const renderCurrencySelector = ({ input, meta: { touched, error } }) => (
 )
 
 class ArticleForm extends React.Component {
-
   componentDidMount() {
      this.handleInitialize();
-   }
+  }
 
 
   handleInitialize() {
-    const { initialValues } = this.props
-    this.props.initialize(initialValues);
+    this.props.initialize(this.props.initialValues);
   }
 
-  submitForm = values => {
+  submitForm = async values => {
     this.props.match.params.id ?
-
-    this.props.addFlashMessage({
-      message: 'Article successfully updated',
-      type: 'success'
-    }) &&
     this.props.startEditArticle(values) :
-
-    this.props.addFlashMessage({
-      message: 'Article successfully added',
-      type: 'success'
-    }) &&
     this.props.startAddArticle(values)
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting } = this.props;
 
     return (
         <form className="box-layout" onSubmit={handleSubmit(this.submitForm.bind(this))}>
@@ -98,9 +86,7 @@ class ArticleForm extends React.Component {
                   type="number"
                 />
               </div>
-              <div className="item">
-                <Field name="currency" component={renderCurrencySelector} />
-              </div>
+              
             </div>
           </div>
 
@@ -116,10 +102,11 @@ class ArticleForm extends React.Component {
 
           {this.props.match.params.id ?
             <div>
+              <Link className="button" type="button" to={`/article/${this.props.match.params.id}`}>Cancel</Link>
               <button className="button button--register" type="submit">Save</button>
               <button className="button button--register" type="button" onClick={this.props.onRemove}>Remove it</button>
             </div> :
-            <button className="button button--register" type="submit">Post a new article</button>
+            <button className="button button--register" type="submit" disabled={pristine || submitting}>Post a new article</button>
           }
           </div>
         </form>
@@ -133,7 +120,7 @@ class ArticleForm extends React.Component {
 const mapStateToProps = (state, props) => {
   if (props.match.params.id) {
     return {
-      initialValues: state.articles.find((article) => article._id === props.match.params.id )
+      initialValues: state.articles.article
     }
   }
   return { initialValues: null }
@@ -142,5 +129,6 @@ const mapStateToProps = (state, props) => {
 ArticleForm = connect(mapStateToProps, { addFlashMessage, startAddArticle })(ArticleForm);
 
 export default reduxForm({
-  form: 'articleForm'
+  form: 'articleForm',
+  submitting: isSubmitting('articleForm')
 })(ArticleForm);

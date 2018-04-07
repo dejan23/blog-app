@@ -15,10 +15,13 @@ import PrivateRoute from './PrivateRoute';
 import Secret from '../components/Secret';
 import CreateNewArticle from '../components/article/CreateNewArticle';
 import SingleArticle from '../components/article/SingleArticle';
+import UserArticles from '../components/article/UserArticles';
 import EditArticle from '../components/article/EditArticle';
+import SearchResult from '../components/article/SearchResult';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Profile from '../components/userProfile/Profile';
+import ProfileEdit from '../components/userProfile/ProfileEdit';
 import Profiles from '../components/userProfile/Profiles';
 import WizardForm from '../components/auth/RegisterWizard/WizardForm';
 
@@ -32,19 +35,22 @@ const AppRouter = () => (
         <Route exact path='/' component={DashboardPage}/>
         <PublicRoute exact path='/login' component={Login}/>
         <PublicRoute exact path='/logout' component={Logout}/>
-        <PublicRoute exact path='/register' component={Register}/>
-        <PublicRoute exact path='/wizard' component={WizardForm}/>
+        <PublicRoute exact path='/register' component={WizardForm}/>
+        <PublicRoute exact path='/wizard' component={Register}/>
         <PublicRoute exact path='/register/success' component={RegisterSuccess}/>
         <PublicRoute exact path='/auth/verify/:token' component={Verify}/>
         <PublicRoute exact path='/auth/resend' component={ResendToken}/>
         <PublicRoute exact path='/auth/resend/success' component={ResendTokenSuccess}/>
         <PublicRoute exact path="/article/:id" component={SingleArticle} />
         <PublicRoute exact path="/article/:id/edit" component={EditArticle} />
+        <PublicRoute exact path="/search" component={SearchResult} />
 
         <PrivateRoute exact path='/secret' component={Secret}/>
-        <PrivateRoute exact path='/user/:id' component={Profile}/>
+        <PrivateRoute exact path='/users/:id' component={Profile}/>
+        <PrivateRoute exact path='/users/:id/articles' component={UserArticles}/>
+        <PrivateRoute exact path='/users/:id/edit' component={ProfileEdit}/>
         <PrivateRoute exact path='/users' component={Profiles}/>
-        <PrivateRoute exact path='/user/:*' component={NotFoundPage}/>
+        <PrivateRoute exact path='/users/:*' component={NotFoundPage}/>
         <PrivateRoute exact path='/create' component={CreateNewArticle}/>
         <Route component={NotFoundPage} />
       </Switch>

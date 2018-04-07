@@ -14,22 +14,14 @@ const articleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  created_at: {
-    type: Date,
-    default: Date.now
-  },
-  updated_at: {
-    type: Date,
-    default: Date.now
-  },
-  user: {
+  author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   }
-})
+}, {timestamps: true})
 
 // Create the model class
-const ArticlesClass = mongoose.model('Articles', articleSchema);
+const ArticleClass = mongoose.model('Article', articleSchema);
 
 // Export the UsersModelClass
-module.exports = ArticlesClass;
+module.exports = ArticleClass;

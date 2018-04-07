@@ -6,6 +6,9 @@ const validate = values => {
   if (!values.lastName) {
     errors.lastName = 'Required'
   }
+  if (!values.username) {
+    errors.username = 'Required'
+  }
   if (!values.email) {
     errors.email = 'Please enter an email'
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {

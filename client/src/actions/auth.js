@@ -14,23 +14,18 @@ const ROOT_URL = process.env.ROOT_URL || 'http://localhost:5000';
 export function loginUser({email, password}) {
   return function(dispatch) {
     // Submit email/password to the server
-    axios
+    return axios
       .post(`${ROOT_URL}/auth/login`, {email, password})
-      .then(response => {
-        const parsedJson = JSON.parse(response.config.data);
-        const email = parsedJson.email;
-        localStorage.setItem('email', email);
-        const getEmail = localStorage.getItem('email');
-
+      .then(async (response) => {
+        await localStorage.setItem('username', response.data.username);
         // if req is good...
         // - update state to indicate user is auth
-        dispatch({
+        await dispatch({
           type: AUTH_USER,
           payload: email
         });
         // - save the JWT token
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('username', response.data.username);
+        await localStorage.setItem('token', response.data.token);
         // - redirect to the special page
         history.push('/');
       })
@@ -108,7 +103,7 @@ export function resendToken(email) {
     axios
       .put(`${ROOT_URL}/auth/resendToken`, {email})
       .then(response => {
-        history.push('/');
+        history.push('/auth/resend/success');
       })
       .catch(error => dispatch(authError(error.response.data.error)));
   };

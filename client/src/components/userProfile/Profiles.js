@@ -11,12 +11,12 @@ class Profiles extends React.Component {
   render() {
     return(
       <div className="content-container content-container--list">
-      <div className="list-header">
+      <div className="profile-list-header">
         <div className="show-for-mobile">Users</div>
         <div className="show-for-desktop">User</div>
         <div className="show-for-desktop">Joined</div>
       </div>
-      <div className="list-body">
+      <div className="profile-list-body">
         {!this.props.users ? (
           <div className="list-item list-item--message">
               <span>No users</span>

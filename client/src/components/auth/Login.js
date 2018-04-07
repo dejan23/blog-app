@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, isSubmitting } from 'redux-form';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginUser, clearAlert } from '../../actions/auth';
@@ -32,12 +32,9 @@ class Login extends React.Component {
     return this.props.clearAlert();
   }
 
-  submitForm = values => {
-    this.props.addFlashMessage({
-      type: 'info',
-      message: 'You logged in successfully'
-    })
-    this.props.loginUser(values);
+  submitForm = async (values) => {
+   await this.props.loginUser(values);
+
   }
 
   renderAlert() {
@@ -51,7 +48,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { handleSubmit } = this.props;
+    const { handleSubmit, pristine, submitting } = this.props;
 
     return (
 
@@ -78,8 +75,11 @@ class Login extends React.Component {
         </div>
 
         {this.renderAlert()}
-          <button className="button button--login" type="submit">Login</button>
+          <button className="button button--login" type="submit" disabled={pristine || submitting}>Login</button>
           <p>Don't have an account? <Link to='/register'>Register</Link></p>
+          {
+            this.props.errorMessage ? <p>Haven't received confirmation token? <Link to='/auth/resend'>Resend token</Link></p> : undefined
+          }
       </div>
       </form>
 
@@ -95,5 +95,6 @@ function mapStateToProps(state) {
 Login = connect(mapStateToProps, { loginUser, clearAlert, addFlashMessage })(Login);
 
 export default reduxForm({
-  form: 'login-form'
+  form: 'login-form',
+  submitting: isSubmitting('login-form')
 })(Login)
