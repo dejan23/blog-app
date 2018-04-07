@@ -47,7 +47,7 @@ module.exports = env => {
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
         }),
-        new webpack.optimize.UglifyJsPlugin()
+      new UglifyJsPlugin()
       ],
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     devServer: {
