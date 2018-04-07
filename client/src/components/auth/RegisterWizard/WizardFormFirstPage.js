@@ -52,7 +52,7 @@ class WizardFormFirstPage extends Component {
 
 export default reduxForm({
   form: 'wizard', // <------ same form name
-  destroyOnUnmount: false, // <------ preserve form data
+  destroyOnUnmount: true, // <------ preserve form data
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   validate
 })(WizardFormFirstPage)

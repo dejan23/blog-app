@@ -73,13 +73,19 @@ class Login extends React.Component {
             type="password"
           />
         </div>
-
         {this.renderAlert()}
           <button className="button button--login" type="submit" disabled={pristine || submitting}>Login</button>
           <p>Don't have an account? <Link to='/register'>Register</Link></p>
           {
             this.props.errorMessage ? <p>Haven't received confirmation token? <Link to='/auth/resend'>Resend token</Link></p> : undefined
           }
+          <div>
+            <strong>demo account</strong>
+            <br />
+            user: demo@demo.com
+            <br />
+            password: demo
+          </div>
       </div>
       </form>
 

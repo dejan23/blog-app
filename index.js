@@ -55,7 +55,6 @@ require('./routes/usersRoutes')(app);
 //   // Respond to ourselves
 //   console.error(err);
 // })
-
 if (process.env.NODE_ENV === 'production') {
   // express will serve up production assets, like main.js or main.css
   app.use(express.static(path.join(__dirname, 'client', 'public')));

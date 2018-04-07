@@ -41,6 +41,10 @@ const renderLocationSelector = ({ input, meta: { touched, error } }) => (
 )
 
 class WizardFormSecondPage extends Component {
+  componentWillUnmount() {
+    return this.props.clearAlert();
+  }
+
   submitForm = values => {
     this.props.addFlashMessage({
       type: 'success',
