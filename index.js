@@ -33,28 +33,28 @@ require('./routes/authRoutes')(app);
 require('./routes/articlesRoutes')(app);
 require('./routes/usersRoutes')(app);
 
-// Catch 404 errors and forward them to error handler
-app.use((req, res, next) => {
-  const err = new Error('Not Found')
-  err.status = 404;
-  next(err);
-})
-
-// Error handler function
-app.use((err, req, res, next) => {
-  const error = process.env.NODE_ENV === 'production' ? {} : err;
-  const status = err.status || 500;
-
-  // Respond to client
-res.status(status).json({
-  error: {
-    message: error.message
-  }
-})
-
-  // Respond to ourselves
-  console.error(err);
-})
+// // Catch 404 errors and forward them to error handler
+// app.use((req, res, next) => {
+//   const err = new Error('Not Found')
+//   err.status = 404;
+//   next(err);
+// })
+//
+// // Error handler function
+// app.use((err, req, res, next) => {
+//   const error = process.env.NODE_ENV === 'production' ? {} : err;
+//   const status = err.status || 500;
+//
+//   // Respond to client
+// res.status(status).json({
+//   error: {
+//     message: error.message
+//   }
+// })
+//
+//   // Respond to ourselves
+//   console.error(err);
+// })
 
 if (process.env.NODE_ENV === 'production') {
   // express will serve up production assets, like main.js or main.css
