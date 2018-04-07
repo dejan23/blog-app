@@ -46,9 +46,8 @@ module.exports = env => {
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.ROOT_URL': JSON.stringify(process.env.ROOT_URL)
-        }), 
+        }),
         new webpack.optimize.UglifyJsPlugin()
-        })
       ],
     devtool: isProduction ? 'source-map' : 'inline-source-map',
     devServer: {
