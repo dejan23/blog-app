@@ -31,8 +31,10 @@ export const clearSearch = () => ({
 
 export function startSearch (query) {
   return dispatch => {
+    console.log(query)
     axios.get(`${ROOT_URL}/search?title=${query}`).then(response => {
       dispatch(setSearch(response.data))
+
     })
     .catch(error => {
       dispatch(clearSearch())
@@ -47,11 +49,15 @@ export const setArticles = articles => ({
   payload: articles
 });
 
-export function startSetArticles () {
+export function startSetArticles (query) {
   return dispatch => {
-    axios.get(`${ROOT_URL}/articles`).then(response => {
+    axios.get(`${ROOT_URL}/articles?sort=${query}`).then(response => {
       dispatch(setArticles(response.data));
-    });
+    })
+    .catch(error => {
+      dispatch(clearSearch())
+      dispatch(searchFail(error.response.data.error))
+    })
   };
 }
 

@@ -3,10 +3,22 @@ const User = require('../models/User');
 
 exports.getAll = async (req, res, next) => {
   try {
+    let sort = req.query.sort
+    let sortby = null;
+    if(sort === 'undefined') { sort = -1, sortby = "createdAt"}
+    if(sort === undefined) { sort = -1, sortby = "createdAt"}
+    if(sort === 'newest') { sort = -1, sortby = "createdAt"}
+    if(sort === 'oldest') { sort = 1, sortby = "createdAt"}
+    if(sort === 'price-low') { sort = 1, sortby = 'price' }
+    if(sort === 'price-high') { sort = -1, sortby = 'price' }
+
+    let sortobj = {};
+    sortobj[sortby] = sort;
+
     const articles = await Article.find({})
     .lean()
     .populate('author', 'username')
-    .sort({"createdAt": -1})
+    .sort(sortobj)
     res.status(200).send(articles);
   } catch(err) {
     next(err);
@@ -15,11 +27,22 @@ exports.getAll = async (req, res, next) => {
 
 exports.find = async (req, res, next) => {
   try {
-    const regexp = new RegExp("^"+ req.query.title);
-    const articles = await Article.find({ title: regexp})
+    const title = new RegExp("^"+ req.query.title);
+
+    let sort = req.query.sort
+    if(sort === undefined) { sort = -1, sortby = "createdAt"}
+    if(sort === 'newest') { sort = -1, sortby = "createdAt"}
+    if(sort === 'oldest') { sort = 1, sortby = "createdAt"}
+    if(sort === 'price-low') { sort = 1, sortby = 'price' }
+    if(sort === 'price-high') { sort = -1, sortby = 'price' }
+    console.log(sort)
+    let sortobj = {};
+    sortobj[sortby] = sort;
+
+    const articles = await Article.find({ title })
       .lean()
       .populate('author', 'username')
-      .sort({"createdAt": 1})
+      .sort(sortobj)
     if(articles.length === 0) {
       return res.status(404).send({error: 'Nothing found'});
     }
