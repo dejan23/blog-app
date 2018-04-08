@@ -8,7 +8,7 @@ module.exports = function(app) {
   app.get('/articles', Article.getAll, function(req, res) {
     res.send({aSecretCode: 'super123abc'});
   });
-  app.get('/search', Article.find, (req, res) => { })
+  app.get('/search', Article.find)
   app.post('/articles', requireAuth, Article.create);
 
   app.get('/articles/:id', Article.getById);
