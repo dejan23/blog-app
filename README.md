@@ -1,13 +1,14 @@
 # blog-app
 
 built using
-
 - nodejs
 - express
+- mongodb
 - passport
 - jwt
 - bcrypt
 - nodemailer
+- mailgun
 
 - react
 - redux
