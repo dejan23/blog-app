@@ -29,10 +29,10 @@ export const clearSearch = () => ({
   type: 'CLEAR_SEARCH'
 })
 
-export function startSearch (query) {
+export function startSearch (title, sort) {
   return dispatch => {
-    console.log(query)
-    axios.get(`${ROOT_URL}/search?title=${query}`).then(response => {
+    console.log(title, sort)
+    axios.get(`${ROOT_URL}/search?title=${title}&sort=${sort}`).then(response => {
       dispatch(setSearch(response.data))
 
     })

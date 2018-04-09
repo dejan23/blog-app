@@ -31,6 +31,8 @@ exports.find = async (req, res, next) => {
 
     let sort = req.query.sort
     if(sort === undefined) { sort = -1, sortby = "createdAt"}
+    if(sort === null) { sort = -1, sortby = "createdAt"}
+    if(sort === 'undefined') { sort = -1, sortby = "createdAt"}
     if(sort === 'newest') { sort = -1, sortby = "createdAt"}
     if(sort === 'oldest') { sort = 1, sortby = "createdAt"}
     if(sort === 'price-low') { sort = 1, sortby = 'price' }

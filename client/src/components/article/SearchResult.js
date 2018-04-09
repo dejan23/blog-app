@@ -18,15 +18,21 @@ const renderInput = field =>
 
 class SearchResult extends React.Component {
   componentDidMount() {
-    if(!this.props.submitting) {
-      const values = queryString.parse(this.props.location.search)
-      Object.keys(values).length === 0 ? '' : this.props.startSearch(values.title);
-    }
+    const values = queryString.parse(this.props.location.search)
+    Object.keys(values).length === 0 ? '' : this.props.startSearch(values.title, values.sort);
+  }
+
+  handleClick(input) {
+    const values = queryString.parse(this.props.location.search)
+    this.props.startSearch(values.title, input);
+    history.push ({
+      pathname: '/search',
+      search: `?title=${values.title}&sort=${input}`
+   })
   }
 
   submitForm = async (values) => {
     this.props.startSearch(values.search)
-    // history.push(`/search?title=${values.search}`)
     history.push({
       pathname: '/search',
       search: `?title=${values.search}`
@@ -36,6 +42,12 @@ class SearchResult extends React.Component {
   render() {
     const {props} = this;
     const { handleSubmit, pristine, submitting } = this.props;
+    let sortedBy = null;
+    const values = queryString.parse(this.props.location.search)
+    if(values.sort === 'newest') { sortedBy = 'newest'}
+    if(values.sort === 'oldest') { sortedBy = 'oldest'}
+    if(values.sort === 'price-high') { sortedBy = 'highest price'}
+    if(values.sort === 'price-low') { sortedBy = 'lowest price'}
 
     return (
 
@@ -57,6 +69,17 @@ class SearchResult extends React.Component {
 
         <div>
         <div className="list__lists-title"><h2>Results of <span style={{color: '#2899ab'}}>search</span></h2></div>
+        <div className="dropdown__container">
+          <div className="dropdown">
+            <button className="dropbtn">Sort</button>
+            <div className="dropdown-content">
+              <button onClick={this.handleClick.bind(this, 'newest')} >Newest</button>
+              <button onClick={this.handleClick.bind(this, 'oldest')} >Oldest</button>
+              <button onClick={this.handleClick.bind(this, 'price-high')} >Highest Price</button>
+              <button onClick={this.handleClick.bind(this, 'price-low')} >Lowest Price</button>
+            </div>
+          </div>
+        </div>
         <div className="content-container content-container--list">
         <div className="list-header">
           <div className="show-for-mobile">List of articles</div>
