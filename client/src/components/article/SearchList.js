@@ -13,14 +13,16 @@ const SearchList = ({ _id, title, price, description, picture, createdAt, author
       <h3 className="list-item__title">{title}</h3>
       <span className="list-item__description">{description}</span>
       <br />
+      <br />
       <span className="list-item__price">Price: {numeral(price).format('$0,0')}</span>
-
+      <br />
+      <span className="">Location: {author === null ? <i>location not added</i> : author.location}</span>
       </div>
     </div>
     <div className="list-item__content--info">
-      <p className="list-item__joined">{moment(createdAt).format('MMMM Do, YYYY')},
+      <p className="list-item__joined">{moment(createdAt).format('lll')},
         <br />
-        by <strong>{author === null ? 'deleted author' : author.username}</strong>
+        <span>by <strong>{author === null ? 'deleted author' : author.username}</strong></span>
       </p>
     </div>
   </Link>

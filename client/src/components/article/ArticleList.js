@@ -4,6 +4,7 @@ import ArticleListItem from './ArticleListItem'
 import {startSetArticles, startSearchAll} from '../../actions/article';
 import {history} from '../../routers/AppRouter';
 import queryString from 'query-string';
+import LoadingPage from '../LoadingPage';
 
 export class ArticleList extends React.Component {
   componentWillMount() {
@@ -35,7 +36,10 @@ export class ArticleList extends React.Component {
     if(values.sort === 'oldest') { sortedBy = 'oldest'}
     if(values.sort === 'price-high') { sortedBy = 'highest price'}
     if(values.sort === 'price-low') { sortedBy = 'lowest price'}
-    
+
+    if(this.props.loading) {
+      return <LoadingPage />
+    }
     return (
       <div>
         <div className="list__lists-title"><h2>List of <span>articles</span></h2></div>
@@ -83,7 +87,8 @@ export class ArticleList extends React.Component {
 
 const mapStateToProps = (state) =>{
   return {
-    articles: state.articles.articles
+    articles: state.articles.articles,
+    loading: state.articles.articlesIsLoading
   };
 }
 

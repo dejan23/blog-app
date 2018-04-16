@@ -31,7 +31,6 @@ export const clearSearch = () => ({
 
 export function startSearch (title, sort) {
   return dispatch => {
-    console.log(title, sort)
     axios.get(`${ROOT_URL}/search?title=${title}&sort=${sort}`).then(response => {
       dispatch(setSearch(response.data))
 
@@ -49,15 +48,24 @@ export const setArticles = articles => ({
   payload: articles
 });
 
+export const articlesIsLoading = (bool) => ({
+  type: 'ARTICLES_IS_LOADING',
+  payload: bool
+});
+
 export function startSetArticles (query) {
   return dispatch => {
-    axios.get(`${ROOT_URL}/articles?sort=${query}`).then(response => {
-      dispatch(setArticles(response.data));
-    })
-    .catch(error => {
-      dispatch(clearSearch())
-      dispatch(searchFail(error.response.data.error))
-    })
+    dispatch(articlesIsLoading(true))
+    axios.get(`${ROOT_URL}/articles?sort=${query}`)
+      .then(response => {
+        dispatch(articlesIsLoading(false))
+        dispatch(setArticles(response.data));
+      })
+      .catch(error => {
+        dispatch(articlesIsLoading(false))
+        dispatch(clearSearch())
+        dispatch(searchFail(error.response.data.error))
+      })
   };
 }
 
@@ -69,9 +77,15 @@ export const setArticle = article => ({
 
 export function startSetArticle(_id) {
   return dispatch => {
-    axios.get(`${ROOT_URL}/articles/${_id}`).then(response => {
-      dispatch(setArticle(response.data));
-    });
+    dispatch(articlesIsLoading(true))
+    axios.get(`${ROOT_URL}/articles/${_id}`)
+      .then(response => {
+        dispatch(articlesIsLoading(false))
+        dispatch(setArticle(response.data));
+      })
+      .catch(error => {
+        dispatch(articlesIsLoading(false))
+      })
   };
 };
 

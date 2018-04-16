@@ -1,5 +1,7 @@
 const articlesReducer = (state = [], action) => {
   switch (action.type) {
+    case 'ARTICLES_IS_LOADING':
+      return { ...state, articlesIsLoading: action.payload }
     case 'SET_ARTICLES':
        return { ...state, articles: action.payload }
       // return action.articles

@@ -9,11 +9,22 @@ export const setUser = user => ({
   payload: user
 });
 
+export const userIsLoading = (bool) => ({
+  type: 'USER_IS_LOADING',
+  payload: bool
+});
+
 export const startSetUser = username => {
   return dispatch => {
-    axios.get(`${ROOT_URL}/users/${username}`).then(response => {
-      dispatch(setUser(response.data));
-    });
+    dispatch(userIsLoading(true))
+    axios.get(`${ROOT_URL}/users/${username}`)
+      .then(response => {
+        dispatch(userIsLoading(false))
+        dispatch(setUser(response.data));
+      })
+      .catch(error => {
+        dispatch(userIsLoading(false))
+      })
   };
 };
 
@@ -25,13 +36,19 @@ export const setUsers = users => ({
 
 export const startSetUsers = () => {
   return dispatch => {
-    axios.get(`${ROOT_URL}/users`).then(response => {
-      dispatch(setUsers(response.data));
-    });
+    dispatch(userIsLoading(true))
+    axios.get(`${ROOT_URL}/users`)
+      .then(response => {
+        dispatch(userIsLoading(false))
+        dispatch(setUsers(response.data));
+      })
+      .catch(error => {
+        dispatch(userIsLoading(false))
+      })
   };
 };
 
-// SET_USER_UPDATE 
+// SET_USER_UPDATE
 export const setUserUpdate = user => ({
   type: 'SET_USER_UPDATE',
   payload: user

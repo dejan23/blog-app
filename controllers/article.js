@@ -17,7 +17,7 @@ exports.getAll = async (req, res, next) => {
 
     const articles = await Article.find({})
     .lean()
-    .populate('author', 'username')
+    .populate('author', 'username location')
     .sort(sortobj)
     res.status(200).send(articles);
   } catch(err) {
@@ -37,13 +37,13 @@ exports.find = async (req, res, next) => {
     if(sort === 'oldest') { sort = 1, sortby = "createdAt"}
     if(sort === 'price-low') { sort = 1, sortby = 'price' }
     if(sort === 'price-high') { sort = -1, sortby = 'price' }
-    console.log(sort)
+
     let sortobj = {};
     sortobj[sortby] = sort;
 
     const articles = await Article.find({ title })
       .lean()
-      .populate('author', 'username')
+      .populate('author', 'username location')
       .sort(sortobj)
     if(articles.length === 0) {
       return res.status(404).send({error: 'Nothing found'});
@@ -57,6 +57,7 @@ exports.find = async (req, res, next) => {
 exports.getById = async (req, res, next) => {
   try {
     const article = await Article.findById(req.params.id).populate('author')
+    console.log(article)
     if(!article) {
       return res.status(404).send({error: 'Article is not found'});
    }

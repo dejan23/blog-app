@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../actions/user';
 import ProfilesList from './ProfilesList';
+import LoadingPage from '../LoadingPage';
 
 class Profiles extends React.Component {
   componentWillMount() {
@@ -9,6 +10,9 @@ class Profiles extends React.Component {
   }
 
   render() {
+    if(this.props.loading) {
+      return <LoadingPage />
+    }
     return(
       <div className="content-container content-container--list">
       <div className="profile-list-header">
@@ -34,7 +38,8 @@ class Profiles extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  users: state.user.users
+  users: state.user.users,
+  loading: state.user.userIsLoading
 })
 
 export default connect(mapStateToProps, actions)(Profiles)
